@@ -44,9 +44,7 @@ export function AuthProvider({children}){
     },[]);
     const signup=useCallback(async({name,email,password})=>{
         const data=await Authapi.signup({name,email,password});
-        localStorage.setItem("token",data.token);
-        setToken(data.token);
-        setUser(data.user);
+       
         return data;
 
     },[]);

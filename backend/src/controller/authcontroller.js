@@ -14,7 +14,7 @@ exports.signup=async(req,res)=>{
             return res.status(409).json({error:"Email already registered"});
         }
         const hashedPassword=await bcrypt.hash(password,10);
-        const user=await User.create({name,email,hashedPassword});
+        const user=await User.create({name,email,password:hashedPassword});
         const token=generatedToken({id:user.id,email:user.email});
         res.status(201).json({
             token,

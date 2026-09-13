@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/Authcontext";
+import { joinRoom,createRoom, getRecentMeetings } from "../services/roomapi";
+
 import {
   Video,
   Users,
@@ -12,17 +14,11 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-
-
-// Placeholder until you wire this to a real /api/meetings/recent endpoint
-const RECENT_MEETINGS = [
-  { code: "wkl-pnq-4rt", title: "Design sync", when: "Yesterday, 4:00 PM" },
-  { code: "abc-8fg-mnp", title: "1:1 with Rhea", when: "Tue, 11:30 AM" },
-];
-
 export default function Home() {
   const [joinCode, setJoinCode] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [recentMeetings, setRecentMeetings] = useState([]);
+  const [starting, setStarting] = useState(false);
   const menuRef = useRef(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -35,11 +31,43 @@ export default function Home() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleStart = () => navigate(`/room/${generateRoomCode()}`);
+  useEffect(() => {
+    let cancelled = false;
+    getRecentMeetings()
+      .then((data) => {
+        if (!cancelled) setRecentMeetings(data);
+      })
+      .catch((err) => console.error("Failed to load recent meetings", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const handleJoin = (e) => {
+  const handleStart = async () => {
+    setStarting(true);
+    try {
+      const { roomId } = await createRoom();
+      navigate(`/room/${roomId}`);
+    } catch (err) {
+      console.error("Failed to create room", err);
+    } finally {
+      setStarting(false);
+    }
+  };
+
+  const handleJoin =async(e) => {
     e.preventDefault();
-    if (joinCode.trim()) navigate(`/room/${joinCode.trim()}`);
+    const code=joinCode.trim();
+    if(!code){
+      return;
+    }
+    try{
+      await joinRoom(code);
+      navigate(`/room/${code}`);
+    }catch(err){
+      console.error("Room not found",err);
+    }
+    
   };
 
   const initials = user?.name
@@ -124,12 +152,15 @@ export default function Home() {
         <div className="mt-10 grid w-full max-w-2xl gap-4 sm:grid-cols-2">
           <button
             onClick={handleStart}
-            className="group flex flex-col items-start gap-3 rounded-2xl border border-white/10 bg-gradient-to-br from-[#6D28D9]/25 to-[#22D3EE]/10 p-6 text-left transition hover:border-white/20 hover:shadow-[0_0_28px_rgba(109,40,217,0.35)]"
+            disabled={starting}
+            className="group flex flex-col items-start gap-3 rounded-2xl border border-white/10 bg-gradient-to-br from-[#6D28D9]/25 to-[#22D3EE]/10 p-6 text-left transition hover:border-white/20 hover:shadow-[0_0_28px_rgba(109,40,217,0.35)] disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#6D28D9] to-[#22D3EE]">
               <Video size={18} className="text-white" />
             </span>
-            <span className="font-display text-lg font-medium">Start a meeting</span>
+            <span className="font-display text-lg font-medium">
+              {starting ? "Creating room…" : "Start a meeting"}
+            </span>
             <span className="text-sm text-[#E7E7F1]/50">Create a new room instantly</span>
           </button>
 
@@ -162,22 +193,24 @@ export default function Home() {
         </div>
 
         {/* Recent meetings */}
-        {RECENT_MEETINGS.length > 0 && (
+        {recentMeetings.length > 0 && (
           <div className="mt-14 w-full max-w-2xl">
             <div className="mb-3 flex items-center gap-2 text-sm text-[#E7E7F1]/50">
               <Clock size={14} />
               <span>Recent meetings</span>
             </div>
             <div className="divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-              {RECENT_MEETINGS.map((m) => (
+              {recentMeetings.map((m) => (
                 <button
-                  key={m.code}
-                  onClick={() => navigate(`/room/${m.code}`)}
+                  key={m.room_id}
+                  onClick={() => navigate(`/room/${m.room_id}`)}
                   className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-white/5"
                 >
                   <div>
                     <p className="text-sm font-medium">{m.title}</p>
-                    <p className="text-xs text-[#E7E7F1]/40">{m.when} · {m.code}</p>
+                    <p className="text-xs text-[#E7E7F1]/40">
+                      {new Date(m.created_at).toLocaleString()} · {m.room_id}
+                    </p>
                   </div>
                   <ArrowRight size={15} className="text-[#E7E7F1]/30" />
                 </button>

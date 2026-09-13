@@ -28,8 +28,8 @@ export default function Signup() {
 
     setSubmitting(true);
     try {
-      await signup(name, email, password);
-      navigate("/dashboard");
+      await signup({name, email, password});
+      navigate("/login");
     } catch (err) {
       setError(err.message || "Signup failed");
     } finally {
@@ -93,5 +93,7 @@ export default function Signup() {
         </div>
       </div>
     </div>
+    
   );
+  
 }

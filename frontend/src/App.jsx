@@ -1,19 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/Authcontext";
 import ProtectedRoute from "./components/common/protectedroute";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-
-function Dashboard() {
-  const { user, logout } = useAuth();
-  return (
-    <div style={{ color: "#fff", padding: 40 }}>
-      <h1>Welcome, {user?.name}</h1>
-      <p>{user?.email}</p>
-      <button onClick={logout}>Log out</button>
-    </div>
-  );
-}
+import Login from "./pages/login";
+import Signup from "./pages/signup";
+import Home from "./pages/Home";
+import Room from "./pages/room";
 
 export default function App() {
   return (
@@ -23,13 +14,14 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
-            path="/dashboard"
+            path="/home"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Home/>
               </ProtectedRoute>
             }
           />
+          <Route path="/room/:roomId" element={<Room/>}/>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
