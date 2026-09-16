@@ -1,4 +1,5 @@
 import {useEffect,useState,useCallback} from "react";
+import axiosClient from "../services/axiosclient.js";
 export const useChat=(socket,roomId,currentUser)=>{
     const[messages,setMessages]=useState([]);
     useEffect(()=>{
@@ -19,15 +20,15 @@ export const useChat=(socket,roomId,currentUser)=>{
             }
             socket.emit("chat:send",{
                 roomId,
-                senderId:currentUserId,
-                senderName:currentUserName,
+                senderId:currentUser?.id,
+                senderName:currentUser?.username,
                 message:text,
             });
         },
         [socket,roomId,currentUser]
     );
     const loadHistory=useCallback(async()=>{
-        const res=await fetch(`/api/rooms/${roomId}/chat`,{
+        const res=await axiosClient.get(`/api/rooms/${roomId}/chat`,{
             headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
 
         });

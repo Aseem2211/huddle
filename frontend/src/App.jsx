@@ -5,7 +5,7 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Home from "./pages/Home";
 import Room from "./pages/room";
-
+import Messages from "./pages/messages";
 export default function App() {
   return (
     <AuthProvider>
@@ -21,7 +21,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/room/:roomId" element={<Room/>}/>
+          <Route path="/messages" element={
+            <ProtectedRoute>
+              <Messages/>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/room/:roomId" element={
+            <ProtectedRoute>
+              <Room/>
+            </ProtectedRoute>}/>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>

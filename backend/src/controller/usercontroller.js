@@ -1,5 +1,34 @@
 const bcrypt=require("bcrypt");
 const {User}=reuire("../models/user.js");
+// controllers/userController.js (add this to your existing user controller)
+const pool = require("../config/db.js");
+
+exports.searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const currentUserId = req.user.id; // from your auth middleware
+
+    if (!q || q.trim().length === 0) {
+      return res.json([]);
+    }
+
+    const searchTerm = `%${q.trim()}%`;
+
+    const [rows] = await pool.query(
+      `SELECT id, name, email, avatar_url
+       FROM users
+       WHERE (name LIKE ? OR email LIKE ?)
+       AND id != ?
+       LIMIT 20`,
+      [searchTerm, searchTerm, currentUserId]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error("searchUsers error:", err);
+    res.status(500).json({ message: "Search failed" });
+  }
+};
 exports.updateProfileHandler=async(req,res)=>{
     try{
         const{name,email,password}=req.body;
@@ -43,4 +72,23 @@ exports.changePasswordHandler=async(req,res)=>{
         console.error("Error changing password:", error);
         return res.status(500).json({message:"Internal server error"});
     }
-}
+};
+exports.uploadAvatar=async(req,res)=>{
+    try{
+        if(!req.file){
+            return res.status(400).json({error:"No file uploaded"});
+        }
+        const avatarURL=`/uploads/avatars/${req.file.filename}`;
+        await pool.query("UPDATE users SET avatar_url=? WHERE id=?",[
+            avatarUrl,
+            req.user.id,
+        ]);
+        res.status(200).json({
+            message:"Profile picture updated",
+            avatarUrl,
+        });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({error:"Failed to upload avatar"});
+    }
+};

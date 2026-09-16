@@ -1,3 +1,4 @@
+
 import {useState} from "react";
 import {useNavigate,Link} from "react-router-dom";
 import {useAuth} from "../context/Authcontext";
@@ -57,6 +58,10 @@ export default function Login(){
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
                         />
+                    </div>
+
+                    <div className="auth-forgot">
+                        <Link to="/forgot-password">Forgot password?</Link>
                     </div>
 
                     <button className="auth-submit" type="submit" disabled={submitting}>

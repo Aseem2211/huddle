@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authcontext";
 import { joinRoom,createRoom, getRecentMeetings } from "../services/roomapi";
+import useDM from "../hooks/useDM.js";
 
 import {
   Video,
@@ -12,15 +13,18 @@ import {
   ChevronDown,
   Clock,
   ArrowRight,
+  MessageCircle,
+  X,
 } from "lucide-react";
 
 export default function Home() {
   const [joinCode, setJoinCode] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dmOpen, setDmOpen] = useState(false);
   const [recentMeetings, setRecentMeetings] = useState([]);
   const [starting, setStarting] = useState(false);
   const menuRef = useRef(null);
-  const { user, logout } = useAuth();
+  const { user, logout, socket } = useAuth(); // adjust `socket` key if your AuthContext exposes it under a different name
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,6 +93,14 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setDmOpen((o) => !o)}
+            aria-label="Messages"
+            className="rounded-full p-2 text-[#E7E7F1]/60 transition hover:bg-white/5 hover:text-[#E7E7F1]"
+          >
+            <MessageCircle size={19} />
+          </button>
+
           <button
             onClick={() => navigate("/settings")}
             aria-label="Settings"
@@ -219,6 +231,30 @@ export default function Home() {
           </div>
         )}
       </main>
+
+      {/* DM slide-out */}
+      {dmOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm"
+            onClick={() => setDmOpen(false)}
+          />
+          <div className="fixed right-0 top-0 z-40 flex h-full w-full max-w-sm flex-col border-l border-white/10 bg-[#12131F]/95 shadow-2xl backdrop-blur-xl">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+              <span className="font-display text-base font-medium">Messages</span>
+              <button
+                onClick={() => setDmOpen(false)}
+                className="rounded-full p-1.5 text-[#E7E7F1]/60 transition hover:bg-white/5 hover:text-[#E7E7F1]"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <useDM socket={socket} currentUser={user} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

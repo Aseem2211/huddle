@@ -43,7 +43,7 @@ export default function Room() {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const { user, token } = useAuth();
-
+  const [chatSocket,setChatSocket]=useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStreams, setRemoteStreams] = useState({});
   const [micOn, setMicOn] = useState(true);
@@ -78,7 +78,7 @@ export default function Room() {
 
         const socket = io(import.meta.env.VITE_SERVER_URL, { auth: { token } });
         socketRef.current = socket;
-
+        setChatSocket(socket);
         const handleRemoteStreams = (socketId, remoteStream) => {
           setRemoteStreams((prev) => ({ ...prev, [socketId]: remoteStream }));
         };

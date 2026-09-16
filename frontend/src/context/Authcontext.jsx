@@ -53,7 +53,7 @@ export function AuthProvider({children}){
         setToken(null);
         setUser(null);
     },[]);
-    const value={user,token,isAuthenticated:!!token,loading,login,signup,logout};
+    const value={user,token,isAuthenticated:!!token,loading,login,signup,logout,setUser};
     return <Authcontext.Provider value={value}>{children}</Authcontext.Provider>;
 }
 export function useAuth(){

@@ -1,3 +1,4 @@
+const registerDmHandlers=require("./dmSocket.js");
 io.on("connection", (socket) => {
   console.log("new socket connection:", socket.id);
 
@@ -43,4 +44,16 @@ io.on("connection", (socket) => {
       socket.to(socket.roomId).emit("user-left", { socketId: socket.id });
     }
   });
+   socket.on("dm:join", (userId) => {
+    socket.join(`user_${userId}`);
+  });
+   socket.on("dm:send", async ({ conversationId, senderId, receiverId, content }) => {
+    const conversationModel = require("../model/conversation.model.js");
+    const message = await conversationModel.saveMessage(conversationId, senderId, content);
+    io.to(`user_${receiverId}`).to(`user_${senderId}`).emit("dm:receive", {
+      ...message,
+      conversation_id: conversationId,
+    });
+  });
+  registerDmHandlers(io,socket);
 });
