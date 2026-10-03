@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth.js"); 
-const conversationController = require("../controllers/conversationcontroller.js");
+const conversationController = require("../controller/conversationcontroller.js");
 
 router.get("/", authMiddleware, conversationController.getConversations);
 router.post("/start", authMiddleware, conversationController.startOrGetConversation);

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authcontext";
+import {Link} from "react-router-dom";
 import { joinRoom,createRoom, getRecentMeetings } from "../services/roomapi";
 import useDM from "../hooks/useDM.js";
 
