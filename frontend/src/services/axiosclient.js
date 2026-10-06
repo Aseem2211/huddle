@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const raw = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const raw = (import.meta.env.VITE_API_URL || "https://huddle-g0v2.onrender.com").replace(/\/$/, "");
 const BASE_URL = raw.endsWith("/api") ? raw : `${raw}/api`;
 
 const axiosClient = axios.create({
