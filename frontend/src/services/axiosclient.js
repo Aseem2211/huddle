@@ -1,8 +1,11 @@
 import axios from "axios";
-const BASE_URL=import.meta.env.VITE_API_URL;
-const axiosClient=axios.create({
-    baseURL:BASE_URL,
-    headers:{"content-Type":"application/json"},
+
+const raw = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const BASE_URL = raw.endsWith("/api") ? raw : `${raw}/api`;
+
+const axiosClient = axios.create({
+    baseURL: BASE_URL,
+    headers: { "Content-Type": "application/json" },
 });
 axiosClient.interceptors.request.use((config)=>{
     const token=localStorage.getItem("token");
