@@ -7,7 +7,7 @@ io.on("connection", (socket) => {
     socket.roomId = roomId;
     socket.userId = userId;
 
-    // sockets already in the room, before this one joined
+    
     const clients = Array.from(io.sockets.adapter.rooms.get(roomId) || [])
       .filter((id) => id !== socket.id);
 
@@ -16,8 +16,8 @@ io.on("connection", (socket) => {
       return { socketId: id, userId: s?.userId };
     });
 
-    socket.emit("existing-users", existingUsers); // tell the newcomer who's already there
-    socket.to(roomId).emit("user-joined", { socketId: socket.id, userId }); // tell others someone joined
+    socket.emit("existing-users", existingUsers); 
+    socket.to(roomId).emit("user-joined", { socketId: socket.id, userId }); 
   });
 
   socket.on("offer", ({ to, offer }) => {

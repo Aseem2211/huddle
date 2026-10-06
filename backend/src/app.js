@@ -4,7 +4,7 @@ const path=require("path");
 const cors=require("cors");
 app.set("etag",false);
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:process.env.CLIENT_URL,
     credentials:true,
 }));
 app.use((req,res,next)=>{
