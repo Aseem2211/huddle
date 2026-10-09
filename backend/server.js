@@ -1,4 +1,6 @@
+require("dotenv").config();
 const http = require('http');
+
 const { Server } = require('socket.io');
 const app = require('./src/app');
 
@@ -51,4 +53,4 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(5000, () => console.log('Server running on 5000'));
+server.listen(process.env.PORT||5000, () => console.log('Server running on 5000'));

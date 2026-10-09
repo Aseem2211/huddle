@@ -4,11 +4,11 @@ const path=require("path");
 const cors=require("cors");
 app.set("etag",false);
 app.use(cors({
-    origin:process.env.CLIENT_URL,
-    credentials:true,
-}));
+    origin:[process.env.CLIENT_URL,"http://localhost:5173"].filter(Boolean),methods:["Get","Post"]},
+    
+));
 app.use((req,res,next)=>{
-    res.set("Cache-Control","no-store");
+    res.set("Cache-Control","no-store")
     next();
 });
 app.use(express.json());
