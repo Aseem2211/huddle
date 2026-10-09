@@ -1,8 +1,12 @@
 require("dotenv").config();
 const http = require('http');
-
 const { Server } = require('socket.io');
 const app = require('./src/app');
+
+const allowed = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim().replace(/\/$/, ""))
+  .filter(Boolean);
 
 const server = http.createServer(app);
 
@@ -12,8 +16,8 @@ const io = new Server(server, {
       if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) return cb(null, true);
       cb(new Error("Not allowed by CORS"));
     },
-    
     methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
 
