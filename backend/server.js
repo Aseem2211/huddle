@@ -8,7 +8,11 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL, 
+    origin: (origin, cb) => {
+      if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) return cb(null, true);
+      cb(new Error("Not allowed by CORS"));
+    },
+    
     methods: ['GET', 'POST'],
   },
 });
