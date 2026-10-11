@@ -1,4 +1,4 @@
-const { pool } = require("../config/db.js");
+const  pool  = require("../config/db.js");
 
 // Always normalize so smaller id is user_one
 function normalizeIds(idA, idB) {
