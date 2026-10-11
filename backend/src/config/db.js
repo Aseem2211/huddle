@@ -25,4 +25,6 @@ pool
     console.error("DB connection failed:", err.code, err.message)
   );
 
+// Works for BOTH `const pool = require(...)` and `const { pool } = require(...)`
 module.exports = pool;
+module.exports.pool = pool;

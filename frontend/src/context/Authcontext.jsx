@@ -20,7 +20,7 @@ export function AuthProvider({children}){
                 }
             } catch (error) {
                 if(!cancelled){
-                    if(error.response?.status===401){
+                    if(error.status===401){
                         localStorage.removeItem("token");
                         setToken(null);
                     }

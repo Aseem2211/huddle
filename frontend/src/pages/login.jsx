@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {useNavigate,Link} from "react-router-dom";
 import {useAuth} from "../context/Authcontext";
+import {resendOtp} from "../services/authApi.js";
 
 export default function Login(){
     const {login}=useAuth();
@@ -19,9 +20,16 @@ export default function Login(){
         }
         setSubmitting(true);
         try{
-            await login({email,password});
+            const cleanEmail=email.trim().toLowerCase();
+            await login({email:cleanEmail,password});
             navigate("/home");
         }catch(err){
+            if(err.data?.needsVerification){
+                const cleanEmail=email.trim().toLowerCase();
+                try{await resendOtp({email:cleanEmail});}catch{}
+                navigate("/verify-otp",{state:{email:cleanEmail}});
+                return;
+            }
             setError(err.message||"Login failed");
         }finally{
             setSubmitting(false);

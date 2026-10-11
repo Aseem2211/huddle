@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { forgotPassword, resetPassword } from "../services/authApi.js";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1 = enter email, 2 = enter OTP + new password
@@ -20,11 +20,11 @@ const ForgotPassword = () => {
     setMessage("");
     setLoading(true);
     try {
-      const res = await axios.post("/api/auth/forgot-password", { email });
-      setMessage(res.data.message);
+      const data = await forgotPassword({ email: email.trim().toLowerCase() });
+      setMessage(data.message);
       setStep(2);
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong");
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -46,15 +46,15 @@ const ForgotPassword = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("/api/auth/reset-password", {
-        email,
+      const data = await resetPassword({
+        email: email.trim().toLowerCase(),
         otp,
         newPassword,
       });
-      setMessage(res.data.message);
+      setMessage(data.message);
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      setError(err.response?.data?.error || "Invalid or expired OTP");
+      setError(err.message || "Invalid or expired OTP");
     } finally {
       setLoading(false);
     }

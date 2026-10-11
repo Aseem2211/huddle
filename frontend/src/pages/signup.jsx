@@ -28,8 +28,9 @@ export default function Signup() {
 
     setSubmitting(true);
     try {
-      await signup({name, email, password});
-      navigate("/login");
+      const cleanEmail = email.trim().toLowerCase();
+      await signup({ name, email: cleanEmail, password });
+      navigate("/verify-otp", { state: { email: cleanEmail } });
     } catch (err) {
       setError(err.message || "Signup failed");
     } finally {

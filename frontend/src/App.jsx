@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from "./context/Authcontext";
 import ProtectedRoute from "./components/common/protectedroute";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
+import VerifyOtp from "./pages/verifyotp";
+import ForgotPassword from "./pages/forgetpassword";
 import Home from "./pages/home";
 import Room from "./pages/room";
 import Messages from "./pages/messages";
@@ -15,6 +17,8 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/home" element={<Home />} />

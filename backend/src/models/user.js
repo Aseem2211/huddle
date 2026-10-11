@@ -17,25 +17,25 @@ const User={
     },
     async updateUser(userId,{name,email,password}){
         const [result]=await pool.query(
-            `UPDATE user SET name=?,email=?,password=? WHERE id=?`,
+            `UPDATE users SET name=?,email=?,password=? WHERE id=?`,
             [name,email,password,userId]
         );
-        if(result.affectedrows===0){
-            return NULL;
+        if(result.affectedRows===0){
+            return null;
         }
         const [rows]=await pool.query("SELECT id,name,email,created_at FROM users WHERE id=?",[userId]);
         return rows[0];
     },
     async getUserPasswordHash(userId){
         const [rows]=await pool.query(
-            `SELECT password FROM user WHERE id=?`[userId]
+            `SELECT password FROM users WHERE id=?`,[userId]
         );
             return rows[0]?.password||null;
         
     },
     async updatePassword(userId,newPasswordHash){
         const [result]=await pool.query(
-            `UPDATE user SET password=? WHERE id=?`,
+            `UPDATE users SET password=? WHERE id=?`,
             [newPasswordHash,userId]
         );
         return result.affectedRows > 0;
