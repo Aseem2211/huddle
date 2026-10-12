@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
@@ -58,7 +59,7 @@ export default function Room() {
   const [chatOpen,setChatOpen]=useState(false);
   const [displayedLocalStream, setDisplayedLocalStream] = useState(null);
   const socketRef = useRef(null);
- 
+  const localStreamRef=useRef(null);
   // What the LOCAL tile currently displays — camera stream, or screen stream while sharing
   
 
@@ -66,7 +67,7 @@ export default function Room() {
   const peersRef = useRef(null);
   const cleanupSignalingRef = useRef(null);
   const screenStreamRef = useRef(null);
-   const {messages,sendMessage,loadHistory}=useChat(socketRef.current,roomId);
+   const {messages,sendMessage,loadHistory}=useChat(socketRef.current,roomId,user);
   useEffect(() => {
     let cancelled = false;
     async function setup() {
@@ -77,10 +78,11 @@ export default function Room() {
           stream.getTracks().forEach((t) => t.stop());
           return;
         }
+        localStreamRef.current = stream;
         setLocalStream(stream);
         setDisplayedLocalStream(stream);
 
-        const socket = io(import.meta.env.VITE_SERVER_URL, { auth: { token } });
+        const socket = io(SOCKET_URL, { auth: { token } });
         socketRef.current = socket;
         setChatSocket(socket);
         const handleRemoteStreams = (socketId, remoteStream) => {
@@ -116,7 +118,10 @@ export default function Room() {
       socketRef.current?.emit("leave-room");
       cleanupSignalingRef.current?.();
       socketRef.current?.disconnect();
-      localStream?.getTracks().forEach((t) => t.stop());
+      localStreamRef.current?.getTracks().forEach((t) => t.stop());
+      localStreamRef.current = null;
+      screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+      screenStreamRef.current = null;
     };
   }, [roomId]);
 
@@ -153,10 +158,10 @@ export default function Room() {
 
   const stopSharing = () => {
     if (screenStreamRef.current) {
-      const cameraTrack = localStream.getVideoTracks()[0];
+      const cameraTrack = localStreamRef.current.getVideoTracks()[0];
       stopScreenShare(peersRef.current, cameraTrack);
 
-      setDisplayedLocalStream(localStream); // local tile back to camera
+      setDisplayedLocalStream(localStreamRef.current); // local tile back to camera
 
       screenStreamRef.current.getTracks().forEach((track) => track.stop());
       screenStreamRef.current = null;
