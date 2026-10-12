@@ -33,6 +33,6 @@ export const useChat=(socket,roomId,currentUser)=>{
             setMessages(res.data?.messages || []);
         } catch { /* history isn't saved yet */ }
         }, [roomId]);
-    
+    return {messages,sendMessage,loadHistory};
     
 };
