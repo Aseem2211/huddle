@@ -27,13 +27,12 @@ export const useChat=(socket,roomId,currentUser)=>{
         },
         [socket,roomId,currentUser]
     );
-    const loadHistory=useCallback(async()=>{
-        const res=await axiosClient.get(`/api/rooms/${roomId}/chat`,{
-            headers:{Authorization:`Bearer ${localStorage.getItem("token")}`},
-
-        });
-        const data=await res.json();
-        setMessages(data.messages||[]);
-    },[roomId]);
-    return {messages,sendMessage,loadHistory};
+    const loadHistory = useCallback(async () => {
+        try {
+            const res = await axiosClient.get(`/rooms/${roomId}/chat`);
+            setMessages(res.data?.messages || []);
+        } catch { /* history isn't saved yet */ }
+        }, [roomId]);
+    
+    
 };

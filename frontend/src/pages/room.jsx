@@ -17,7 +17,11 @@ import {
   MonitorUp,
   MonitorX,
 } from "lucide-react";
-
+const SOCKET_URL = (
+  import.meta.env.VITE_SERVER_URL ||
+  import.meta.env.VITE_API_URL ||
+  "https://huddle-g0v2.onrender.com"
+).replace(/\/$/, "").replace(/\/api$/, "");
 function VideoTile({ stream, label, muted }) {
   const videoRef = useRef(null);
   useEffect(() => {
