@@ -32,10 +32,12 @@ async function sendOtpEmail(toEmail, otp, purpose) {
         timeout: 15000,
       }
     );
-  } catch (err) {
-    console.error("Brevo send error:", err.response?.data || err.message);
-    throw new Error("Failed to send OTP email");
-  }
+    } catch (err) {
+        const detail = err.response?.data ? JSON.stringify(err.response.data) : err.message;
+        console.error("Brevo send error:", detail);
+        throw new Error("Brevo: " + detail);
+    }
+  
 }
 
 module.exports = { sendOtpEmail };

@@ -20,6 +20,10 @@ app.use((req,res,next)=>{
     next();
 });
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log(new Date().toISOString(), req.method, req.originalUrl);
+  next();
+});
 const roomRouter = require("./routes/roomroute.js");
 const authrouter=require("./routes/authroute.js");
 const dmrouter=require("./routes/dmroute.js");

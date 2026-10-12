@@ -42,7 +42,7 @@ exports.signup = async (req, res) => {
     res.status(201).json({ message: "Signup successful. Please verify the OTP sent to your email." });
   } catch (err) {
     console.error("signup error:", err);
-    res.status(500).json({ error: "Could not complete signup. Please try again." });
+    res.status(500).json({ er "Signup failed"+err.message });
   }
 };
 
@@ -170,4 +170,3 @@ exports.getme = async (req, res) => {
     console.error(err);
     return res.status(500).json({ error: "Failed to fetch user" });
   }
-};
