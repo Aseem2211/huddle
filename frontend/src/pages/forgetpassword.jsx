@@ -1,9 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { forgotPassword, resetPassword } from "../services/authApi.js";
+import {
+  AuthShell,
+  Notice,
+  TextField,
+  PasswordField,
+  MailIcon,
+  KeyIcon,
+  ArrowIcon,
+  SpinnerIcon,
+  primaryBtn,
+} from "../components/ui/shared";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1); // 1 = enter email, 2 = enter OTP + new password
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -18,6 +29,10 @@ const ForgotPassword = () => {
     e.preventDefault();
     setError("");
     setMessage("");
+    if (!email.trim()) {
+      setError("Enter your email");
+      return;
+    }
     setLoading(true);
     try {
       const data = await forgotPassword({ email: email.trim().toLowerCase() });
@@ -35,6 +50,10 @@ const ForgotPassword = () => {
     setError("");
     setMessage("");
 
+    if (!otp || !newPassword || !confirmPassword) {
+      setError("All fields are required");
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -61,60 +80,100 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "60px auto", padding: 24 }}>
-      <h2>Forgot Password</h2>
+    <AuthShell
+      eyebrow="Account recovery"
+      title={<>Reset your<br />password<span className="text-[#2F6BFF]">.</span></>}
+      subtitle={
+        step === 1
+          ? "Enter your email and we'll send you a 6-digit code."
+          : "Enter the code we sent and choose a new password."
+      }
+      footer={
+        <Link className="font-bold text-[#8B5CF6] underline decoration-[#8B5CF6]/50 underline-offset-4 transition hover:text-white" to="/login">
+          Back to login
+        </Link>
+      }
+    >
+      <div className="mb-6 flex gap-1.5" aria-hidden="true">
+        {[1, 2].map((n) => (
+          <span key={n} className={`h-1 flex-1 transition-colors ${n <= step ? "bg-[#2F6BFF]" : "bg-white/10"}`} />
+        ))}
+      </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {message && <p style={{ color: "green" }}>{message}</p>}
+      {error && <Notice type="error">{error}</Notice>}
+      {message && <Notice type="success">{message}</Notice>}
 
       {step === 1 && (
-        <form onSubmit={handleSendOtp}>
-          <input
+        <form onSubmit={handleSendOtp} noValidate className="space-y-5">
+          <TextField
+            id="email"
+            label="Email"
             type="email"
-            placeholder="Enter your email"
+            autoComplete="email"
+            icon={<MailIcon />}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: "100%", padding: 10, marginBottom: 12 }}
+            placeholder="you@example.com"
           />
-          <button type="submit" disabled={loading} style={{ width: "100%", padding: 10 }}>
-            {loading ? "Sending..." : "Send OTP"}
+          <button className={primaryBtn} type="submit" disabled={loading}>
+            {loading ? (
+              <><SpinnerIcon /> Sending…</>
+            ) : (
+              <>Send code <span className="transition-transform group-hover:translate-x-1"><ArrowIcon /></span></>
+            )}
           </button>
         </form>
       )}
 
       {step === 2 && (
-        <form onSubmit={handleResetPassword}>
-          <input
-            type="text"
-            placeholder="Enter OTP"
+        <form onSubmit={handleResetPassword} noValidate className="space-y-5">
+          <TextField
+            id="otp"
+            label="6-digit code"
+            icon={<KeyIcon />}
+            inputMode="numeric"
+            maxLength={6}
+            autoComplete="one-time-code"
+            inputClassName="text-lg font-bold tracking-[0.5em]"
             value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            required
-            style={{ width: "100%", padding: 10, marginBottom: 12 }}
+            onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+            placeholder="123456"
           />
-          <input
-            type="password"
-            placeholder="New password"
+          <PasswordField
+            id="newPassword"
+            label="New password"
+            autoComplete="new-password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: 10, marginBottom: 12 }}
           />
-          <input
-            type="password"
-            placeholder="Confirm new password"
+          <PasswordField
+            id="confirmPassword"
+            label="Confirm new password"
+            autoComplete="new-password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: 10, marginBottom: 12 }}
           />
-          <button type="submit" disabled={loading} style={{ width: "100%", padding: 10 }}>
-            {loading ? "Resetting..." : "Reset Password"}
+          <button className={primaryBtn} type="submit" disabled={loading}>
+            {loading ? (
+              <><SpinnerIcon /> Resetting…</>
+            ) : (
+              <>Reset password <span className="transition-transform group-hover:translate-x-1"><ArrowIcon /></span></>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setStep(1);
+              setError("");
+              setMessage("");
+            }}
+            className="w-full text-center text-xs font-bold uppercase tracking-[0.18em] text-[#94A3B8] transition hover:text-[#67E8F9]"
+          >
+            Use a different email
           </button>
         </form>
       )}
-    </div>
+    </AuthShell>
   );
 };
 

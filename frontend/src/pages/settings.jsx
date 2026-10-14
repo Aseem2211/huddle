@@ -1,7 +1,16 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authcontext";
-import axiosClient from "../services/axiosclient"; 
+import axiosClient from "../services/axiosclient";
+import {
+  PageShell,
+  Notice,
+  PasswordField,
+  SpinnerIcon,
+  glassCard,
+  primaryBtn,
+} from "../components/ui/shared";
 
 export default function Settings() {
   const { user } = useAuth();
@@ -17,12 +26,16 @@ export default function Settings() {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setMessage({ type: "error", text: "All fields are required" });
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setMessage({ type: "error", text: "New passwords don't match" });
       return;
     }
-    if (newPassword.length < 6) {
-      setMessage({ type: "error", text: "Password must be at least 6 characters" });
+    if (newPassword.length < 8) {
+      setMessage({ type: "error", text: "Password must be at least 8 characters" });
       return;
     }
 
@@ -47,76 +60,50 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-6">
-      <div className="max-w-lg mx-auto">
-        <button
-          onClick={() => navigate("/home")}
-          className="mb-6 text-sm font-semibold text-purple-600 hover:text-purple-800"
-        >
-          ← Back to Home
-        </button>
+    <PageShell
+      title="Settings"
+      subtitle={`Logged in as ${user?.email}`}
+      onBack={() => navigate("/home")}
+    >
+      <section className={glassCard}>
+        <h2 className="mb-5 text-sm font-black uppercase tracking-[0.2em]">Change password</h2>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <h1 className="text-2xl font-extrabold text-purple-700 mb-1">Settings</h1>
-          <p className="text-gray-500 text-sm">Logged in as {user?.email}</p>
-        </div>
+        {message.text && (
+          <Notice type={message.type === "success" ? "success" : "error"}>{message.text}</Notice>
+        )}
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Change Password</h2>
+        <form onSubmit={handleChangePassword} noValidate className="space-y-5">
+          <PasswordField
+            id="oldPassword"
+            label="Current password"
+            autoComplete="current-password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+          <PasswordField
+            id="newPassword"
+            label="New password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <PasswordField
+            id="confirmPassword"
+            label="Confirm new password"
+            autoComplete="new-password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+          <button type="submit" disabled={loading} className={primaryBtn}>
+            {loading ? <><SpinnerIcon /> Updating…</> : "Update password"}
+          </button>
+        </form>
+      </section>
 
-          {message.text && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm font-medium ${
-                message.type === "success"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-red-100 text-red-700"
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
-
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <input
-              type="password"
-              placeholder="Current password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            <input
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700 transition disabled:opacity-50"
-            >
-              {loading ? "Updating..." : "Update Password"}
-            </button>
-          </form>
-        </div>
-
-        {/* Placeholder for OTP email verification — not built yet */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mt-6 opacity-60">
-          <h2 className="text-lg font-bold text-gray-800 mb-1">Email Verification</h2>
-          <p className="text-sm text-gray-500">Coming soon — OTP verification flow.</p>
-        </div>
-      </div>
-    </div>
+      <section className={`${glassCard} opacity-60`}>
+        <h2 className="mb-1 text-sm font-black uppercase tracking-[0.2em]">Email verification</h2>
+        <p className="text-sm text-[#94A3B8]">Coming soon — OTP verification flow.</p>
+      </section>
+    </PageShell>
   );
 }

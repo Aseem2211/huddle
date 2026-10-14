@@ -1,25 +1,30 @@
-// src/pages/Messages.jsx
-import { useState, useEffect, useCallback } from "react";
+
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Search, Send, MessageSquare } from "lucide-react";
 import { useAuth } from "../context/Authcontext";
 import { useConversations } from "../hooks/useConversations";
 import { useDmChat } from "../hooks/useDmChat";
 import * as dmApi from "../services/dmApi";
-import {socket}  from "../socket/socketClient"; // adjust to however you access your socket instance
+import { socket as socketClient } from "../socket/socketClient";
+import { Mandala } from "../components/ui/shared";
 
 export default function Messages() {
   const { user } = useAuth();
-  const socket = socket();
+  const navigate = useNavigate();
+  const socket = typeof socketClient === "function" ? socketClient() : socketClient;
 
   const { conversations, loading: convosLoading, bumpConversation } = useConversations();
   const [activeConversationId, setActiveConversationId] = useState(null);
+  const [activeName, setActiveName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [draft, setDraft] = useState("");
+  const bottomRef = useRef(null);
 
   const { messages, sendMessage } = useDmChat(socket, activeConversationId, user?.id, bumpConversation);
 
-  // debounced user search
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
@@ -39,9 +44,14 @@ export default function Messages() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const openConversationWith = useCallback(async (otherUserId) => {
-    const conversation = await dmApi.startConversation(otherUserId);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const openConversationWith = useCallback(async (otherUser) => {
+    const conversation = await dmApi.startConversation(otherUser.id);
     setActiveConversationId(conversation.id || conversation.conversation_id);
+    setActiveName(otherUser.name || "");
     setSearchQuery("");
     setSearchResults([]);
   }, []);
@@ -53,112 +63,157 @@ export default function Messages() {
     setDraft("");
   };
 
-  const activeConversation = conversations.find(c => c.conversation_id === activeConversationId);
+  const activeConversation = conversations.find((c) => c.conversation_id === activeConversationId);
+  const chatTitle = activeConversation?.other_user_name || activeName || "Chat";
+
+  const avatar = (name, i = 0) => (
+    <span
+      className={`flex h-10 w-10 shrink-0 items-center justify-center font-bold text-white ${
+        i % 2 ? "bg-[#8B5CF6]" : "bg-[#2F6BFF]"
+      }`}
+    >
+      {name?.[0]?.toUpperCase()}
+    </span>
+  );
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-80 border-r border-gray-200 bg-white flex flex-col">
-        <div className="p-4 border-b border-gray-200">
-          <input
-            type="text"
-            placeholder="Search people to message..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
-          />
+    <div className="flex h-screen bg-[#070B14] text-[#F1F5F9]">
+      <aside
+        className={`${activeConversationId ? "hidden md:flex" : "flex"} w-full flex-col border-r border-white/10 bg-[#101A2E]/70 backdrop-blur-2xl md:w-80`}
+      >
+        <div className="space-y-4 border-b border-white/10 p-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/home")}
+              aria-label="Back to home"
+              className="p-1.5 text-[#94A3B8] transition hover:text-[#67E8F9]"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <h1 className="text-sm font-black uppercase tracking-[0.2em]">Messages</h1>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search people to message…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="peer w-full border border-white/10 bg-[#070B14]/70 py-2.5 pl-10 pr-3 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]"
+            />
+            <Search
+              size={16}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] transition-colors peer-focus:text-[#67E8F9]"
+            />
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {searchQuery.trim() ? (
-            // search mode
             searching ? (
-              <p className="p-4 text-sm text-gray-400">Searching...</p>
+              <p className="p-4 text-sm text-[#94A3B8]">Searching…</p>
             ) : searchResults.length === 0 ? (
-              <p className="p-4 text-sm text-gray-400">No users found</p>
+              <p className="p-4 text-sm text-[#94A3B8]">No users found</p>
             ) : (
-              searchResults.map((u) => (
+              searchResults.map((u, i) => (
                 <button
                   key={u.id}
-                  onClick={() => openConversationWith(u.id)}
-                  className="w-full flex items-center gap-3 p-3 hover:bg-purple-50 text-left"
+                  onClick={() => openConversationWith(u)}
+                  className="flex w-full items-center gap-3 border-b border-white/5 p-3 text-left transition hover:bg-white/5"
                 >
-                  <div className="w-10 h-10 rounded-full bg-purple-400 text-white flex items-center justify-center font-bold">
-                    {u.name?.[0]?.toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{u.name}</p>
-                    <p className="text-xs text-gray-400">{u.email}</p>
+                  {avatar(u.name, i)}
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold">{u.name}</p>
+                    <p className="truncate text-xs text-[#94A3B8]">{u.email}</p>
                   </div>
                 </button>
               ))
             )
           ) : convosLoading ? (
-            <p className="p-4 text-sm text-gray-400">Loading conversations...</p>
+            <p className="p-4 text-sm text-[#94A3B8]">Loading conversations…</p>
           ) : conversations.length === 0 ? (
-            <p className="p-4 text-sm text-gray-400">No conversations yet — search someone to start.</p>
+            <p className="p-4 text-sm text-[#94A3B8]">No conversations yet — search someone to start.</p>
           ) : (
-            conversations.map((c) => (
+            conversations.map((c, i) => (
               <button
                 key={c.conversation_id}
-                onClick={() => setActiveConversationId(c.conversation_id)}
-                className={`w-full flex items-center gap-3 p-3 text-left hover:bg-purple-50 ${
-                  activeConversationId === c.conversation_id ? "bg-purple-100" : ""
+                onClick={() => {
+                  setActiveConversationId(c.conversation_id);
+                  setActiveName(c.other_user_name || "");
+                }}
+                className={`flex w-full items-center gap-3 border-b border-white/5 border-l-2 p-3 text-left transition hover:bg-white/5 ${
+                  activeConversationId === c.conversation_id
+                    ? "border-l-[#67E8F9] bg-white/[0.06]"
+                    : "border-l-transparent"
                 }`}
               >
-                <div className="w-10 h-10 rounded-full bg-purple-400 text-white flex items-center justify-center font-bold">
-                  {c.other_user_name?.[0]?.toUpperCase()}
-                </div>
-                <p className="font-semibold text-sm">{c.other_user_name}</p>
+                {avatar(c.other_user_name, i)}
+                <p className="truncate text-sm font-bold">{c.other_user_name}</p>
               </button>
             ))
           )}
         </div>
-      </div>
+      </aside>
 
-      {/* Chat view */}
-      <div className="flex-1 flex flex-col">
+      <section className={`${activeConversationId ? "flex" : "hidden md:flex"} relative flex-1 flex-col overflow-hidden`}>
         {!activeConversationId ? (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            Select a conversation or search for someone to message
+          <div className="relative flex flex-1 items-center justify-center overflow-hidden">
+            <Mandala />
+            <div className="relative flex flex-col items-center gap-3 text-center text-[#94A3B8]">
+              <MessageSquare size={30} />
+              <p className="max-w-xs text-sm">Select a conversation or search for someone to message</p>
+            </div>
           </div>
         ) : (
           <>
-            <div className="p-4 border-b border-gray-200 bg-white font-bold">
-              {activeConversation?.other_user_name || "Chat"}
+            <div className="flex items-center gap-3 border-b border-white/10 bg-[#101A2E]/70 px-4 py-3 backdrop-blur-2xl">
+              <button
+                onClick={() => setActiveConversationId(null)}
+                aria-label="Back to conversations"
+                className="p-1.5 text-[#94A3B8] transition hover:text-[#67E8F9] md:hidden"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              {avatar(chatTitle)}
+              <span className="truncate text-sm font-black uppercase tracking-[0.14em]">{chatTitle}</span>
             </div>
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
-              {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={`max-w-xs px-4 py-2 rounded-2xl text-sm ${
-                    m.sender_id === user?.id
-                      ? "bg-purple-600 text-white ml-auto"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {m.content}
-                </div>
-              ))}
+
+            <div className="flex-1 space-y-2 overflow-y-auto p-4">
+              {messages.map((m) => {
+                const mine = m.sender_id === user?.id;
+                return (
+                  <div
+                    key={m.id}
+                    className={`max-w-xs border px-4 py-2 text-sm md:max-w-md ${
+                      mine
+                        ? "ml-auto border-[#2F6BFF] bg-[#2F6BFF] text-white"
+                        : "border-white/10 bg-[#101A2E] text-[#F1F5F9]"
+                    }`}
+                  >
+                    {m.content}
+                  </div>
+                );
+              })}
+              <div ref={bottomRef} />
             </div>
-            <form onSubmit={handleSend} className="p-4 border-t border-gray-200 flex gap-2">
+
+            <form onSubmit={handleSend} className="flex gap-2 border-t border-white/10 bg-[#101A2E]/70 p-4 backdrop-blur-2xl">
               <input
                 type="text"
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
-                placeholder="Type a message..."
-                className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                placeholder="Type a message…"
+                className="flex-1 border border-white/10 bg-[#070B14]/70 px-4 py-2.5 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]"
               />
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-purple-600 text-white font-bold hover:bg-purple-700"
+                className="flex items-center gap-2 border border-[#2F6BFF] bg-[#2F6BFF] px-5 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-[#4A7FFF]"
               >
-                Send
+                Send <Send size={14} />
               </button>
             </form>
           </>
         )}
-      </div>
+      </section>
     </div>
   );
 }
