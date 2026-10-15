@@ -2,6 +2,8 @@ require("dotenv").config();
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./src/app');
+const User = require('./src/models/user.js');
+const { verifyToken } = require('./src/utils/jwt.js');
 
 const allowed = (process.env.CLIENT_URL || "")
   .split(",")
@@ -21,16 +23,43 @@ const io = new Server(server, {
   },
 });
 
+const MAX_CHAT_MESSAGES = 200;
+const MAX_MESSAGE_LENGTH = 2000;
+const roomChats = new Map();
+const normalizeRoomId = (id) => (typeof id === 'string' ? id.trim().toLowerCase() : '');
+
+io.use(async (socket, next) => {
+  try {
+    const token = socket.handshake.auth && socket.handshake.auth.token;
+    if (token) {
+      const payload = verifyToken(token);
+      const user = await User.findById(payload.id);
+      if (user) socket.user = { id: user.id, name: user.name };
+    }
+  } catch (err) {
+    socket.user = null;
+  }
+  next();
+});
+
 io.on('connection', (socket) => {
+  const clearChatIfEmpty = (roomId) => {
+    const members = io.sockets.adapter.rooms.get(roomId);
+    if (!members || members.size === 0) roomChats.delete(roomId);
+  };
+
   const leaveCurrentRoom = () => {
     if (socket.roomId) {
-      socket.to(socket.roomId).emit('user-left', { socketId: socket.id });
-      socket.leave(socket.roomId);
+      const roomId = socket.roomId;
+      socket.to(roomId).emit('user-left', { socketId: socket.id });
+      socket.leave(roomId);
       socket.roomId = null;
+      clearChatIfEmpty(roomId);
     }
   };
 
-  socket.on('join-room', ({ roomId, userId } = {}) => {   // was roomCode
+  socket.on('join-room', ({ roomId: rawRoomId, userId } = {}) => {
+    const roomId = normalizeRoomId(rawRoomId);
     if (!roomId) return;
     leaveCurrentRoom();
     socket.join(roomId);
@@ -39,10 +68,14 @@ io.on('connection', (socket) => {
 
     const existingUsers = Array.from(io.sockets.adapter.rooms.get(roomId) || [])
       .filter((id) => id !== socket.id)
-      .map((id) => ({ socketId: id, userId: io.sockets.sockets.get(id)?.userId }));
+      .map((id) => {
+        const other = io.sockets.sockets.get(id);
+        return { socketId: id, userId: other?.userId, name: other?.user?.name };
+      });
 
-    socket.emit('existing-users', existingUsers);          // newcomer learns who is already there
-    socket.to(roomId).emit('user-joined', { socketId: socket.id, userId });
+    socket.emit('existing-users', existingUsers);
+    socket.emit('chat:history', roomChats.get(roomId) || []);
+    socket.to(roomId).emit('user-joined', { socketId: socket.id, userId, name: socket.user?.name });
   });
 
   socket.on('offer',  ({ to, offer })     => io.to(to).emit('offer',  { from: socket.id, offer }));
@@ -50,12 +83,22 @@ io.on('connection', (socket) => {
   socket.on('ice-candidate', ({ to, candidate }) =>
     io.to(to).emit('ice-candidate', { from: socket.id, candidate }));
 
-  socket.on('chat:send', ({ roomId, senderId, senderName, message } = {}) => {
-    if (!roomId || socket.roomId !== roomId) return;
+  socket.on('chat:send', ({ roomId: rawRoomId, message } = {}) => {
+    const roomId = normalizeRoomId(rawRoomId);
+    if (!roomId || socket.roomId !== roomId || !socket.user) return;
     if (typeof message !== 'string' || !message.trim()) return;
-    io.to(roomId).emit('chat:receive', {
-      senderId, senderName, message, created_at: new Date().toISOString(),
-    });
+    const payload = {
+      id: `${Date.now()}-${socket.id}-${Math.random().toString(36).slice(2, 8)}`,
+      senderId: socket.user.id,
+      senderName: socket.user.name,
+      message: message.trim().slice(0, MAX_MESSAGE_LENGTH),
+      created_at: new Date().toISOString(),
+    };
+    const history = roomChats.get(roomId) || [];
+    history.push(payload);
+    if (history.length > MAX_CHAT_MESSAGES) history.shift();
+    roomChats.set(roomId, history);
+    io.to(roomId).emit('chat:receive', payload);
   });
 
   socket.on('leave-room', leaveCurrentRoom);

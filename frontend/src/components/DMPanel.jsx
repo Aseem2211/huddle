@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Send, MessageSquare } from "lucide-react";
 import useDM from "../hooks/useDM";
+import { Avatar } from "./ui/shared";
 
 export default function DMPanel({ socket, currentUser }) {
   const {
@@ -107,13 +108,7 @@ export default function DMPanel({ socket, currentUser }) {
             onClick={() => handleOpen(c)}
             className="flex w-full items-center gap-3 border-b border-white/5 px-4 py-3.5 text-left transition hover:bg-white/5"
           >
-            <span
-              className={`flex h-10 w-10 shrink-0 items-center justify-center font-bold text-white ${
-                i % 2 ? "bg-[#8B5CF6]" : "bg-[#2F6BFF]"
-              }`}
-            >
-              {c.other_user_name?.[0]?.toUpperCase()}
-            </span>
+            <Avatar name={c.other_user_name} tone={i % 2 ? "violet" : "cobalt"} />
             <span className="truncate text-sm font-bold">{c.other_user_name}</span>
           </button>
         ))

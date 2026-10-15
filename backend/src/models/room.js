@@ -8,7 +8,7 @@ const Room={
         return {id:result.insertId,room_id,host_id,title,status,scheduled_at};
     },
     async findByCode(room_id){
-        const [rows]=await pool.query("SELECT * FROM rooms WHERE room_id=?",[room_id]);
+        const [rows]=await pool.query("SELECT * FROM rooms WHERE room_id=?",[String(room_id).trim().toLowerCase()]);
         return rows[0];
     },
     async findRecentByUser(userId,limit=5){

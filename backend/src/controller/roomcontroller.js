@@ -57,7 +57,7 @@ exports.getRecentMeetings=async(req,res)=>{
 };
 exports.joinRoomHandler=async(req,res)=>{
   try{
-    const {roomId}=req.params;
+    const roomId=String(req.params.roomId||"").trim().toLowerCase();
     const room=await Room.findByCode(roomId);
     if(!room){
       return res.status(404).json({message:"Room not found"});

@@ -185,7 +185,7 @@ export function AuthShell({ eyebrow, title, subtitle, children, footer }) {
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-2.5 text-xl font-black tracking-tight">
               <LogoMark />
-              <span>ZOOM<span className="text-[#2F6BFF]">LITE</span></span>
+              <span>HUD<span className="text-[#2F6BFF]">DLE</span></span>
             </div>
             <span className="flex items-center gap-2 border border-[#67E8F9]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#67E8F9]">
               <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
@@ -231,5 +231,77 @@ export function PageShell({ title, subtitle, onBack, backLabel = "Back to home",
         <div className="space-y-6">{children}</div>
       </div>
     </main>
+  );
+}
+
+export function Wordmark({ className = "" }) {
+  return (
+    <div className={`flex items-center gap-2.5 text-xl font-black tracking-tight ${className}`}>
+      <LogoMark />
+      <span>HUD<span className="text-[#2F6BFF]">DLE</span></span>
+    </div>
+  );
+}
+
+const tones = {
+  cobalt: "border-[#2F6BFF]/30 bg-[#2F6BFF]/15 text-[#7FA6FF]",
+  live: "border-[#67E8F9]/30 bg-[#67E8F9]/10 text-[#67E8F9]",
+  violet: "border-[#8B5CF6]/30 bg-[#8B5CF6]/15 text-[#B79BFF]",
+  slate: "border-white/10 bg-white/[0.04] text-[#94A3B8]",
+  solid: "border-white/20 bg-white/15 text-white",
+};
+
+export function IconTile({ icon: Icon, tone = "cobalt", size = 18, className = "" }) {
+  return (
+    <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center border ${tones[tone]} ${className}`}>
+      <Icon size={size} strokeWidth={1.75} aria-hidden="true" />
+    </span>
+  );
+}
+
+export function Pill({ tone = "slate", children, dot = false }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] ${tones[tone]}`}>
+      {dot && <span className="h-1.5 w-1.5 bg-current" />}
+      {children}
+    </span>
+  );
+}
+
+export function Card({ as: Tag = "section", variant = "glass", interactive = false, className = "", children, ...rest }) {
+  const surface =
+    variant === "primary"
+      ? "border-[#2F6BFF] bg-[#2F6BFF] shadow-[0_0_40px_rgba(47,107,255,0.28)]"
+      : "border-white/10 bg-[#101A2E]/75 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.7)] backdrop-blur-2xl";
+  return (
+    <Tag
+      className={`relative border ${surface} ${
+        interactive ? "transition duration-200 hover:-translate-y-0.5 hover:border-white/25" : ""
+      } ${className}`}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+export function Avatar({ name = "", tone = "cobalt", className = "h-10 w-10 text-sm" }) {
+  const bg = tone === "violet" ? "bg-[#8B5CF6]" : "bg-[#2F6BFF]";
+  return (
+    <span className={`flex shrink-0 items-center justify-center font-bold text-white ${bg} ${className}`}>
+      {name?.[0]?.toUpperCase() || "?"}
+    </span>
+  );
+}
+
+export function SectionLabel({ icon: Icon, children, action }) {
+  return (
+    <div className="mb-3 flex items-center justify-between">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#94A3B8]">
+        {Icon && <Icon size={14} aria-hidden="true" />}
+        <span>{children}</span>
+      </div>
+      {action}
+    </div>
   );
 }

@@ -1,20 +1,21 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { KeyRound, MailCheck } from "lucide-react";
 import { useAuth } from "../context/Authcontext";
 import axiosClient from "../services/axiosclient";
+import AppShell from "../components/ui/AppShell";
 import {
-  PageShell,
   Notice,
   PasswordField,
   SpinnerIcon,
-  glassCard,
+  Card,
+  IconTile,
+  Pill,
   primaryBtn,
 } from "../components/ui/shared";
 
 export default function Settings() {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -60,13 +61,20 @@ export default function Settings() {
   };
 
   return (
-    <PageShell
+    <AppShell
+      eyebrow="Account"
       title="Settings"
-      subtitle={`Logged in as ${user?.email}`}
-      onBack={() => navigate("/home")}
+      subtitle={`Signed in as ${user?.email}`}
+      width="max-w-3xl"
     >
-      <section className={glassCard}>
-        <h2 className="mb-5 text-sm font-black uppercase tracking-[0.2em]">Change password</h2>
+      <Card className="p-7">
+        <div className="mb-6 flex items-center gap-4">
+          <IconTile icon={KeyRound} tone="cobalt" />
+          <div>
+            <h2 className="text-base font-bold">Change password</h2>
+            <p className="text-sm text-[#94A3B8]">Use at least 8 characters.</p>
+          </div>
+        </div>
 
         {message.text && (
           <Notice type={message.type === "success" ? "success" : "error"}>{message.text}</Notice>
@@ -80,30 +88,36 @@ export default function Settings() {
             value={oldPassword}
             onChange={(e) => setOldPassword(e.target.value)}
           />
-          <PasswordField
-            id="newPassword"
-            label="New password"
-            autoComplete="new-password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <PasswordField
-            id="confirmPassword"
-            label="Confirm new password"
-            autoComplete="new-password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <button type="submit" disabled={loading} className={primaryBtn}>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <PasswordField
+              id="newPassword"
+              label="New password"
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <PasswordField
+              id="confirmPassword"
+              label="Confirm new password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+          <button type="submit" disabled={loading} className={`${primaryBtn} sm:w-auto sm:px-8`}>
             {loading ? <><SpinnerIcon /> Updating…</> : "Update password"}
           </button>
         </form>
-      </section>
+      </Card>
 
-      <section className={`${glassCard} opacity-60`}>
-        <h2 className="mb-1 text-sm font-black uppercase tracking-[0.2em]">Email verification</h2>
-        <p className="text-sm text-[#94A3B8]">Coming soon — OTP verification flow.</p>
-      </section>
-    </PageShell>
+      <Card className="mt-5 flex items-center gap-4 p-6">
+        <IconTile icon={MailCheck} tone="slate" />
+        <div className="flex-1">
+          <h2 className="text-base font-bold">Email verification</h2>
+          <p className="text-sm text-[#94A3B8]">OTP verification flow.</p>
+        </div>
+        <Pill tone="violet">Coming soon</Pill>
+      </Card>
+    </AppShell>
   );
 }

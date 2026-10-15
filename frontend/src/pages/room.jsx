@@ -93,7 +93,7 @@ function useActiveSpeaker(entries) {
   return activeId;
 }
 
-function VideoTile({ stream, label, muted, speaking, videoOff, initial }) {
+function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, isSelf }) {
   const videoRef = useRef(null);
   useEffect(() => {
     if (videoRef.current) videoRef.current.srcObject = stream;
@@ -113,9 +113,15 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial }) {
           </span>
         </div>
       )}
-      <span className="absolute bottom-0 left-0 flex items-center gap-2 bg-[#070B14]/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-[#F1F5F9]">
-        {speaking && <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />}
-        {label}
+      <span className="absolute bottom-0 left-0 flex max-w-full items-center gap-2 bg-[#070B14]/85 px-3 py-1.5 text-xs font-semibold text-[#F1F5F9] backdrop-blur-md">
+        {speaking && <span className="h-1.5 w-1.5 shrink-0 animate-pulse bg-[#67E8F9]" />}
+        <span className="truncate">{label}</span>
+        {isSelf && (
+          <span className="border border-[#2F6BFF]/50 bg-[#2F6BFF]/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.14em] text-[#7FA6FF]">
+            You
+          </span>
+        )}
+        {micOff && <MicOff size={13} className="shrink-0 text-rose-300" aria-label="Muted" />}
       </span>
     </div>
   );
@@ -133,15 +139,17 @@ function ControlButton({ onClick, variant = "default", label, children }) {
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`flex h-12 w-12 items-center justify-center border transition focus:outline-none focus:ring-2 focus:ring-[#67E8F9] ${styles[variant]}`}
+      className={`flex h-12 min-w-12 items-center justify-center gap-2 border px-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#67E8F9] lg:px-4 ${styles[variant]}`}
     >
       {children}
+      <span className="hidden text-[11px] font-bold uppercase tracking-[0.14em] lg:inline">{label}</span>
     </button>
   );
 }
 
 export default function Room() {
-  const { roomId } = useParams();
+  const { roomId: rawRoomId } = useParams();
+  const roomId = (rawRoomId || "").toLowerCase();
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const [chatSocket, setChatSocket] = useState(null);
@@ -155,13 +163,14 @@ export default function Room() {
   const [chatOpen, setChatOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [displayedLocalStream, setDisplayedLocalStream] = useState(null);
+  const [names, setNames] = useState({});
   const socketRef = useRef(null);
   const localStreamRef = useRef(null);
   const peersRef = useRef(null);
   const cleanupSignalingRef = useRef(null);
   const screenStreamRef = useRef(null);
 
-  const { messages, sendMessage, loadHistory } = useChat(chatSocket, roomId, user);
+  const { messages, sendMessage } = useChat(chatSocket, roomId, user);
 
   useEffect(() => {
     let cancelled = false;
@@ -195,6 +204,15 @@ export default function Room() {
         const { peers, cleanup } = initSignaling(socket, stream, handleRemoteStreams, handleUserLeft);
         peersRef.current = peers;
         cleanupSignalingRef.current = cleanup;
+        socket.on("existing-users", (list) => {
+          setNames((prev) => ({
+            ...prev,
+            ...Object.fromEntries((list || []).map((u) => [u.socketId, u.name])),
+          }));
+        });
+        socket.on("user-joined", (u) => {
+          setNames((prev) => ({ ...prev, [u.socketId]: u.name }));
+        });
         socket.emit("join-room", { roomId, userId: user.id });
         setStatus("ready");
       } catch (err) {
@@ -219,11 +237,14 @@ export default function Room() {
     };
   }, [roomId]);
 
-  useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
-
   const remoteEntries = Object.entries(remoteStreams);
+  const participantCount = remoteEntries.length + 1;
+  const gridCols =
+    participantCount === 1
+      ? "max-w-3xl grid-cols-1"
+      : participantCount === 2
+      ? "max-w-5xl grid-cols-1 sm:grid-cols-2"
+      : "max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
   const speakerEntries = [
     ...(localStream ? [{ id: "local", stream: localStream }] : []),
@@ -298,18 +319,18 @@ export default function Room() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#070B14] text-[#F1F5F9]">
-      <header className="flex items-center justify-between px-6 py-4">
+      <header className="flex items-center justify-between gap-3 border-b border-white/5 px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex items-center gap-4">
           <LogoMark />
           <button
             onClick={copyRoomCode}
-            className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#94A3B8] transition hover:border-white/25 hover:text-[#F1F5F9]"
+            className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] text-[#94A3B8] transition hover:border-white/25 hover:text-[#F1F5F9]"
           >
             {roomId}
             {copied ? <Check size={14} className="text-[#67E8F9]" /> : <Copy size={14} />}
           </button>
         </div>
-        <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#94A3B8]">
+        <span className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#94A3B8]">
           {status === "connecting" ? (
             "Connecting…"
           ) : (
@@ -322,12 +343,14 @@ export default function Room() {
         </span>
       </header>
 
-      <main className="flex-1 px-6 pb-28">
-        <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <main className="flex-1 px-4 pb-28 pt-6 sm:px-6">
+        <div className={`mx-auto grid gap-4 ${gridCols}`}>
           {displayedLocalStream && (
             <VideoTile
               stream={displayedLocalStream}
-              label="You"
+              label={user?.name || "You"}
+              isSelf
+              micOff={!micOn}
               muted
               speaking={activeSpeaker === "local"}
               videoOff={!camOn && !sharingScreen}
@@ -338,14 +361,14 @@ export default function Room() {
             <VideoTile
               key={socketId}
               stream={stream}
-              label="Participant"
+              label={names[socketId] || "Participant"}
               speaking={activeSpeaker === socketId}
             />
           ))}
         </div>
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 flex items-center justify-center gap-3 border-t border-white/10 bg-[#101A2E]/80 py-4 backdrop-blur-2xl">
+      <footer className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-center gap-2 border-t border-white/10 bg-[#101A2E]/90 px-3 py-3 backdrop-blur-2xl sm:gap-3 sm:py-4">
         <ControlButton onClick={toggleMic} variant={micOn ? "default" : "off"} label={micOn ? "Mute" : "Unmute"}>
           {micOn ? <Mic size={18} /> : <MicOff size={18} />}
         </ControlButton>

@@ -163,7 +163,7 @@ export default function Signup() {
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-2.5 text-xl font-black tracking-tight">
               <LogoMark />
-              <span>ZOOM<span className="text-[#2F6BFF]">LITE</span></span>
+              <span>HUD<span className="text-[#2F6BFF]">DLE</span></span>
             </div>
             <span className="flex items-center gap-2 border border-[#67E8F9]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#67E8F9]">
               <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />

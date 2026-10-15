@@ -7,7 +7,7 @@ import { useConversations } from "../hooks/useConversations";
 import { useDmChat } from "../hooks/useDmChat";
 import * as dmApi from "../services/dmApi";
 import { socket as socketClient } from "../socket/socketClient";
-import { Mandala } from "../components/ui/shared";
+import { Mandala, Avatar, IconTile } from "../components/ui/shared";
 
 export default function Messages() {
   const { user } = useAuth();
@@ -66,15 +66,7 @@ export default function Messages() {
   const activeConversation = conversations.find((c) => c.conversation_id === activeConversationId);
   const chatTitle = activeConversation?.other_user_name || activeName || "Chat";
 
-  const avatar = (name, i = 0) => (
-    <span
-      className={`flex h-10 w-10 shrink-0 items-center justify-center font-bold text-white ${
-        i % 2 ? "bg-[#8B5CF6]" : "bg-[#2F6BFF]"
-      }`}
-    >
-      {name?.[0]?.toUpperCase()}
-    </span>
-  );
+  const avatar = (name, i = 0) => <Avatar name={name} tone={i % 2 ? "violet" : "cobalt"} />;
 
   return (
     <div className="flex h-screen bg-[#070B14] text-[#F1F5F9]">
@@ -159,7 +151,8 @@ export default function Messages() {
           <div className="relative flex flex-1 items-center justify-center overflow-hidden">
             <Mandala />
             <div className="relative flex flex-col items-center gap-3 text-center text-[#94A3B8]">
-              <MessageSquare size={30} />
+              <IconTile icon={MessageSquare} tone="cobalt" className="h-14 w-14" size={26} />
+              <p className="font-bold text-[#F1F5F9]">Your messages</p>
               <p className="max-w-xs text-sm">Select a conversation or search for someone to message</p>
             </div>
           </div>
