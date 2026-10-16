@@ -7,8 +7,8 @@ const iconProps = {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: 1.75,
-  strokeLinecap: "square",
-  strokeLinejoin: "miter",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
   "aria-hidden": "true",
 };
 
@@ -50,10 +50,10 @@ export const SpinnerIcon = () => (
 );
 
 export const LogoMark = () => (
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <rect x="2" y="5" width="13" height="14" fill="#2563EB" />
-    <path d="M15 10l7-4v12l-7-4z" fill="#B8F34A" />
-    <rect x="5" y="8" width="3" height="3" fill="#22D3EE" />
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <rect x="1" y="1" width="26" height="26" rx="8" fill="#2457E6" />
+    <path d="M8 9.5h8.5a4 4 0 010 8H8z" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    <circle cx="20.5" cy="8" r="2" fill="#C8D5FF" />
   </svg>
 );
 
@@ -75,53 +75,53 @@ export function Mandala() {
       fill="none"
       strokeWidth="1.2"
       aria-hidden="true"
-      className="pointer-events-none absolute left-1/2 top-1/2 w-[760px] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-70"
+      className="mandala-decoration pointer-events-none absolute left-1/2 top-1/2 w-[760px] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-70"
     >
       <g className="origin-center animate-[spin_120s_linear_infinite] motion-reduce:animate-none">
-        <circle r="292" stroke="#B8F34A" strokeOpacity="0.35" strokeDasharray="2 8" />
+        <circle r="292" stroke="#8B5CF6" strokeOpacity="0.35" strokeDasharray="2 8" />
         {Array.from({ length: 48 }, (_, i) => (
-          <circle key={i} cx="0" cy="-280" r="2.4" fill="#22D3EE" fillOpacity="0.7" transform={`rotate(${(360 / 48) * i})`} />
+          <circle key={i} cx="0" cy="-280" r="2.4" fill="#67E8F9" fillOpacity="0.7" transform={`rotate(${(360 / 48) * i})`} />
         ))}
-        {ring(24, "M0 -200 Q16 -235 0 -268 Q-16 -235 0 -200Z", "#B8F34A", { strokeOpacity: 0.6 })}
+        {ring(24, "M0 -200 Q16 -235 0 -268 Q-16 -235 0 -200Z", "#8B5CF6", { strokeOpacity: 0.6 })}
       </g>
       <g className="origin-center animate-[spin_90s_linear_infinite_reverse] motion-reduce:animate-none">
-        <circle r="196" stroke="#2563EB" strokeOpacity="0.5" />
-        {ring(12, "M0 -120 Q34 -165 0 -205 Q-34 -165 0 -120Z", "#2563EB", { strokeOpacity: 0.8 })}
-        {ring(12, "M0 -150 Q10 -172 0 -190 Q-10 -172 0 -150Z", "#22D3EE", { strokeOpacity: 0.7 })}
+        <circle r="196" stroke="#2F6BFF" strokeOpacity="0.5" />
+        {ring(12, "M0 -120 Q34 -165 0 -205 Q-34 -165 0 -120Z", "#2F6BFF", { strokeOpacity: 0.8 })}
+        {ring(12, "M0 -150 Q10 -172 0 -190 Q-10 -172 0 -150Z", "#67E8F9", { strokeOpacity: 0.7 })}
       </g>
       <g className="origin-center animate-[spin_70s_linear_infinite] motion-reduce:animate-none">
-        <circle r="112" stroke="#B8F34A" strokeOpacity="0.5" />
-        {ring(8, "M0 -50 Q22 -80 0 -108 Q-22 -80 0 -50Z", "#B8F34A", { strokeOpacity: 0.85 })}
-        <circle r="46" stroke="#2563EB" strokeOpacity="0.7" />
-        <circle r="22" stroke="#22D3EE" strokeOpacity="0.7" />
-        <circle r="5" fill="#22D3EE" fillOpacity="0.8" />
+        <circle r="112" stroke="#8B5CF6" strokeOpacity="0.5" />
+        {ring(8, "M0 -50 Q22 -80 0 -108 Q-22 -80 0 -50Z", "#8B5CF6", { strokeOpacity: 0.85 })}
+        <circle r="46" stroke="#2F6BFF" strokeOpacity="0.7" />
+        <circle r="22" stroke="#67E8F9" strokeOpacity="0.7" />
+        <circle r="5" fill="#67E8F9" fillOpacity="0.8" />
       </g>
     </svg>
   );
 }
 
 export const fieldIcon =
-  "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#A8B5CC] transition-colors peer-focus:text-[#22D3EE]";
+  "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] transition-colors peer-focus:text-[#2457E6]";
 export const fieldInput =
-  "peer w-full border border-white/10 bg-[#080D1B]/70 py-3.5 pl-11 pr-4 text-sm text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]";
+  "peer w-full rounded-xl border border-[#DCDDD8] bg-white py-3.5 pl-11 pr-4 text-sm text-[#202124] outline-none transition placeholder:text-[#92959B] focus:border-[#2457E6] focus:ring-2 focus:ring-[#2457E6]/10";
 export const labelCls =
-  "block text-xs font-bold uppercase tracking-[0.18em] text-[#F4F7FF]/80";
+  "block text-xs font-semibold tracking-[0.02em] text-[#4E535B]";
 export const primaryBtn =
-  "group flex w-full items-center justify-center gap-3 border border-[#2563EB] bg-[#2563EB] px-5 py-3.5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_0_28px_rgba(47,107,255,0.35)] transition hover:bg-[#4A7FFF] focus:outline-none focus:ring-2 focus:ring-[#22D3EE] focus:ring-offset-2 focus:ring-offset-[#080D1B] disabled:cursor-not-allowed disabled:opacity-60";
+  "group flex w-full items-center justify-center gap-3 rounded-xl border border-[#2457E6] bg-[#2457E6] px-5 py-3.5 text-sm font-semibold tracking-[0.02em] text-white shadow-sm transition hover:bg-[#3769F0] focus:outline-none focus:ring-2 focus:ring-[#2457E6]/30 focus:ring-offset-2 focus:ring-offset-[#F8F7F3] disabled:cursor-not-allowed disabled:opacity-60";
 export const ghostBtn =
-  "flex items-center justify-center gap-2 border border-white/15 bg-white/[0.04] px-4 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[#F4F7FF] transition hover:border-white/30 hover:bg-white/10 focus:outline-none focus:ring-1 focus:ring-[#2563EB] disabled:cursor-not-allowed disabled:opacity-50";
+  "flex items-center justify-center gap-2 rounded-xl border border-[#DCDDD8] bg-white px-4 py-2.5 text-xs font-semibold tracking-[0.02em] text-[#202124] transition hover:border-[#B8C0D0] hover:bg-[#F1F2F4] focus:outline-none focus:ring-2 focus:ring-[#2457E6]/20 disabled:cursor-not-allowed disabled:opacity-50";
 export const glassCard =
-  "relative border border-white/10 bg-[#101A2E]/70 p-6 backdrop-blur-2xl sm:p-8";
+  "relative rounded-2xl border border-[#E3E4E7] bg-white p-6 shadow-sm sm:p-8";
 
 export function Notice({ type = "error", children }) {
   const styles =
     type === "error"
       ? "border-rose-400/40 bg-rose-500/10 text-rose-200"
       : type === "success"
-      ? "border-[#22D3EE]/40 bg-[#22D3EE]/10 text-[#22D3EE]"
-      : "border-[#2563EB]/40 bg-[#2563EB]/10 text-[#F4F7FF]/80";
+      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+      : "border-blue-200 bg-blue-50 text-[#2457E6]";
   return (
-    <div role={type === "error" ? "alert" : "status"} className={`mb-5 flex items-start gap-3 border px-4 py-3 text-sm ${styles}`}>
+    <div role={type === "error" ? "alert" : "status"} className={`mb-5 flex items-start gap-3 rounded-xl border px-4 py-3 text-sm ${styles}`}>
       <span className="mt-0.5 shrink-0">{type === "success" ? <CheckIcon /> : <AlertIcon />}</span>
       <span>{children}</span>
     </div>
@@ -160,7 +160,7 @@ export function PasswordField({ id, label, value, onChange, placeholder = "â€¢â€
           type="button"
           onClick={() => setShow((s) => !s)}
           aria-label={show ? "Hide password" : "Show password"}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#A8B5CC] transition hover:text-[#F4F7FF] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#94A3B8] transition hover:text-[#F1F5F9] focus:outline-none focus:ring-1 focus:ring-[#2F6BFF]"
         >
           {show ? <EyeOffIcon /> : <EyeIcon />}
         </button>
@@ -171,36 +171,36 @@ export function PasswordField({ id, label, value, onChange, placeholder = "â€¢â€
 
 export function AuthShell({ eyebrow, title, subtitle, children, footer }) {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#080D1B] px-5 py-12 text-[#F4F7FF]">
-      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2563EB]/20 blur-[120px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#B8F34A]/20 blur-[130px]" />
+    <main className="auth-page relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-12 text-[#202124]">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2457E6]/5 blur-[120px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#2457E6]/5 blur-[130px]" />
 
       <div className="relative w-full max-w-md">
         <Mandala />
 
-        <section className="relative border border-white/10 bg-[#101A2E]/70 p-7 shadow-[0_0_80px_rgba(47,107,255,0.18)] backdrop-blur-2xl sm:p-10">
-          <span aria-hidden="true" className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-[#22D3EE]" />
-          <span aria-hidden="true" className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-[#B8F34A]" />
+        <section className="relative rounded-2xl border border-[#E3E4E7] bg-white p-7 shadow-[0_18px_60px_rgba(32,33,36,0.07)] sm:p-10">
+          <span aria-hidden="true" className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-[#2457E6]" />
+          <span aria-hidden="true" className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-[#2457E6]" />
 
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-2.5 text-xl font-black tracking-tight">
               <LogoMark />
-              <span>HUD<span className="text-[#2563EB]">DLE</span></span>
+              <span>HUD<span className="text-[#2457E6]">DLE</span></span>
             </div>
-            <span className="flex items-center gap-2 border border-[#22D3EE]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22D3EE]">
-              <span className="h-1.5 w-1.5 animate-pulse bg-[#22D3EE]" />
+            <span className="flex items-center gap-2 border border-[#2457E6]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#2457E6]">
+              <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
               Live
             </span>
           </div>
 
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#B8F34A]">{eyebrow}</p>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#2457E6]">{eyebrow}</p>
           <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] sm:text-5xl">{title}</h1>
-          <p className="mb-8 mt-3 text-sm text-[#A8B5CC]">{subtitle}</p>
+          <p className="mb-8 mt-3 text-sm text-[#94A3B8]">{subtitle}</p>
 
           {children}
 
           {footer && (
-            <div className="mt-8 border-t border-white/10 pt-6 text-center text-sm text-[#A8B5CC]">{footer}</div>
+            <div className="mt-8 border-t border-white/10 pt-6 text-center text-sm text-[#94A3B8]">{footer}</div>
           )}
         </section>
       </div>
@@ -210,22 +210,22 @@ export function AuthShell({ eyebrow, title, subtitle, children, footer }) {
 
 export function PageShell({ title, subtitle, onBack, backLabel = "Back to home", children }) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#080D1B] px-5 py-10 text-[#F4F7FF]">
-      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2563EB]/20 blur-[120px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#B8F34A]/20 blur-[130px]" />
+    <main className="relative min-h-screen overflow-hidden bg-[#070B14] px-5 py-10 text-[#F1F5F9]">
+      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2457E6]/5 blur-[120px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#2457E6]/5 blur-[130px]" />
 
       <div className="relative mx-auto w-full max-w-lg">
         <button
           onClick={onBack}
-          className="mb-6 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A8B5CC] transition hover:text-[#22D3EE]"
+          className="mb-6 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#94A3B8] transition hover:text-[#2457E6]"
         >
           <ArrowLeftIcon /> {backLabel}
         </button>
 
         <div className="mb-6 border border-white/10 bg-[#101A2E]/70 p-6 backdrop-blur-2xl">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#B8F34A]">Huddle</p>
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.3em] text-[#2457E6]">Huddle</p>
           <h1 className="text-3xl font-black tracking-[-0.04em]">{title}</h1>
-          {subtitle && <p className="mt-1 text-sm text-[#A8B5CC]">{subtitle}</p>}
+          {subtitle && <p className="mt-1 text-sm text-[#94A3B8]">{subtitle}</p>}
         </div>
 
         <div className="space-y-6">{children}</div>
@@ -238,16 +238,16 @@ export function Wordmark({ className = "" }) {
   return (
     <div className={`flex items-center gap-2.5 text-xl font-black tracking-tight ${className}`}>
       <LogoMark />
-      <span>HUD<span className="text-[#2563EB]">DLE</span></span>
+      <span>HUD<span className="text-[#2457E6]">DLE</span></span>
     </div>
   );
 }
 
 const tones = {
-  cobalt: "border-[#2563EB]/30 bg-[#2563EB]/15 text-[#7FA6FF]",
-  live: "border-[#22D3EE]/30 bg-[#22D3EE]/10 text-[#22D3EE]",
-  violet: "border-[#B8F34A]/30 bg-[#B8F34A]/15 text-[#B79BFF]",
-  slate: "border-white/10 bg-white/[0.04] text-[#A8B5CC]",
+  cobalt: "border-[#2F6BFF]/30 bg-[#2F6BFF]/15 text-[#7FA6FF]",
+  live: "border-[#2457E6]/30 bg-[#67E8F9]/10 text-[#2457E6]",
+  violet: "border-[#2457E6]/30 bg-[#8B5CF6]/15 text-[#B79BFF]",
+  slate: "border-white/10 bg-white/[0.04] text-[#94A3B8]",
   solid: "border-white/20 bg-white/15 text-white",
 };
 
@@ -271,7 +271,7 @@ export function Pill({ tone = "slate", children, dot = false }) {
 export function Card({ as: Tag = "section", variant = "glass", interactive = false, className = "", children, ...rest }) {
   const surface =
     variant === "primary"
-      ? "border-[#2563EB] bg-[#2563EB] shadow-[0_0_40px_rgba(47,107,255,0.28)]"
+      ? "border-[#2F6BFF] bg-[#2F6BFF] shadow-[0_0_40px_rgba(47,107,255,0.28)]"
       : "border-white/10 bg-[#101A2E]/75 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.7)] backdrop-blur-2xl";
   return (
     <Tag
@@ -286,7 +286,7 @@ export function Card({ as: Tag = "section", variant = "glass", interactive = fal
 }
 
 export function Avatar({ name = "", tone = "cobalt", className = "h-10 w-10 text-sm" }) {
-  const bg = tone === "violet" ? "bg-[#B8F34A]" : "bg-[#2563EB]";
+  const bg = tone === "violet" ? "bg-[#8B5CF6]" : "bg-[#2F6BFF]";
   return (
     <span className={`flex shrink-0 items-center justify-center font-bold text-white ${bg} ${className}`}>
       {name?.[0]?.toUpperCase() || "?"}
@@ -297,7 +297,7 @@ export function Avatar({ name = "", tone = "cobalt", className = "h-10 w-10 text
 export function SectionLabel({ icon: Icon, children, action }) {
   return (
     <div className="mb-3 flex items-center justify-between">
-      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A8B5CC]">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#94A3B8]">
         {Icon && <Icon size={14} aria-hidden="true" />}
         <span>{children}</span>
       </div>

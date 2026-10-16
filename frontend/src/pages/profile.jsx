@@ -97,14 +97,14 @@ export default function Profile() {
               <div className="flex items-center gap-4">
                 <IconTile icon={UserRound} tone="cobalt" />
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#A8B5CC]">Name</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#94A3B8]">Name</p>
                   <p className="truncate text-lg font-bold">{user?.name}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <IconTile icon={Mail} tone="slate" />
                 <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#A8B5CC]">Email</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#94A3B8]">Email</p>
                   <p className="truncate text-sm">{user?.email}</p>
                 </div>
               </div>

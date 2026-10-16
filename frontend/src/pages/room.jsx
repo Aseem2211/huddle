@@ -101,23 +101,23 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
 
   return (
     <div
-      className={`relative aspect-video overflow-hidden border bg-[#101A2E] transition-all duration-150 ${
-        speaking ? "border-[#22D3EE] ring-2 ring-[#22D3EE]" : "border-white/10"
+      className={`meeting-tile relative aspect-video overflow-hidden border transition-all duration-150 ${
+        speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
       }`}
     >
       <video ref={videoRef} autoPlay playsInline muted={muted} className="h-full w-full object-cover" />
       {videoOff && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#101A2E]">
-          <span className="flex h-20 w-20 items-center justify-center bg-[#2563EB] text-3xl font-black text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#202124]">
+          <span className="meeting-avatar flex h-20 w-20 items-center justify-center text-3xl font-black text-white">
             {initial}
           </span>
         </div>
       )}
-      <span className="absolute bottom-0 left-0 flex max-w-full items-center gap-2 bg-[#080D1B]/85 px-3 py-1.5 text-xs font-semibold text-[#F4F7FF] backdrop-blur-md">
-        {speaking && <span className="h-1.5 w-1.5 shrink-0 animate-pulse bg-[#22D3EE]" />}
+      <span className="meeting-label absolute bottom-0 left-0 flex max-w-full items-center gap-2 px-3 py-1.5 text-xs font-semibold">
+        {speaking && <span className="h-1.5 w-1.5 shrink-0 animate-pulse bg-[#67E8F9]" />}
         <span className="truncate">{label}</span>
         {isSelf && (
-          <span className="border border-[#2563EB]/50 bg-[#2563EB]/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.14em] text-[#7FA6FF]">
+          <span className="border border-[#2F6BFF]/50 bg-[#2F6BFF]/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.14em] text-[#7FA6FF]">
             You
           </span>
         )}
@@ -129,17 +129,17 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
 
 function ControlButton({ onClick, variant = "default", label, children }) {
   const styles = {
-    default: "border-white/15 bg-white/[0.06] text-[#F4F7FF] hover:bg-white/10",
-    off: "border-rose-400/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25",
-    on: "border-[#2563EB] bg-[#2563EB] text-white hover:bg-[#4A7FFF]",
-    leave: "border-rose-500 bg-rose-500 text-white hover:bg-rose-600",
+    default: "meeting-control border-[#DCDDD8] bg-[#F1F2F4] text-[#202124] hover:bg-[#E7E9ED]",
+    off: "meeting-control border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100",
+    on: "meeting-control is-on border-[#2457E6] bg-[#2457E6] text-white hover:bg-[#3769F0]",
+    leave: "meeting-control is-danger border-rose-600 bg-rose-600 text-white hover:bg-rose-700",
   };
   return (
     <button
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`flex h-12 min-w-12 items-center justify-center gap-2 border px-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22D3EE] lg:px-4 ${styles[variant]}`}
+      className={`flex h-12 min-w-12 items-center justify-center gap-2 px-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2457E6] lg:px-4 ${styles[variant]}`}
     >
       {children}
       <span className="hidden text-[11px] font-bold uppercase tracking-[0.14em] lg:inline">{label}</span>
@@ -305,7 +305,7 @@ export default function Room() {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#080D1B] text-[#F4F7FF]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#070B14] text-[#F1F5F9]">
         <p className="text-lg font-bold">{errorMsg}</p>
         <button
           onClick={() => navigate("/home")}
@@ -318,24 +318,24 @@ export default function Room() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#080D1B] text-[#F4F7FF]">
-      <header className="flex items-center justify-between gap-3 border-b border-white/5 px-4 py-3 sm:px-6 sm:py-4">
+    <div className="meeting-app flex min-h-screen flex-col">
+      <header className="meeting-topbar flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex items-center gap-4">
           <LogoMark />
           <button
             onClick={copyRoomCode}
-            className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] text-[#A8B5CC] transition hover:border-white/25 hover:text-[#F4F7FF]"
+            className="meeting-room-code flex items-center gap-2 px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] transition hover:border-[#B8C0D0] hover:text-[#202124]"
           >
             {roomId}
-            {copied ? <Check size={14} className="text-[#22D3EE]" /> : <Copy size={14} />}
+            {copied ? <Check size={14} className="text-[#67E8F9]" /> : <Copy size={14} />}
           </button>
         </div>
-        <span className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#A8B5CC]">
+        <span className="meeting-status flex items-center gap-2 px-3 py-1.5 text-xs font-bold tracking-[0.02em]">
           {status === "connecting" ? (
             "Connecting…"
           ) : (
             <>
-              <span className="h-1.5 w-1.5 animate-pulse bg-[#22D3EE]" />
+              <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
               <Users size={14} />
               {remoteEntries.length + 1} in call
             </>
@@ -343,7 +343,7 @@ export default function Room() {
         </span>
       </header>
 
-      <main className="flex-1 px-4 pb-28 pt-6 sm:px-6">
+      <main className="meeting-stage flex-1 px-4 pb-28 pt-6 sm:px-6">
         <div className={`mx-auto grid gap-4 ${gridCols}`}>
           {displayedLocalStream && (
             <VideoTile
@@ -368,7 +368,7 @@ export default function Room() {
         </div>
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-center gap-2 border-t border-white/10 bg-[#101A2E]/90 px-3 py-3 backdrop-blur-2xl sm:gap-3 sm:py-4">
+      <footer className="meeting-footer fixed inset-x-0 bottom-0 z-40 flex items-center justify-center gap-2 px-3 py-3 sm:gap-3 sm:py-4">
         <ControlButton onClick={toggleMic} variant={micOn ? "default" : "off"} label={micOn ? "Mute" : "Unmute"}>
           {micOn ? <Mic size={18} /> : <MicOff size={18} />}
         </ControlButton>

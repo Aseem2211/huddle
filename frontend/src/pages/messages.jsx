@@ -69,7 +69,7 @@ export default function Messages() {
   const avatar = (name, i = 0) => <Avatar name={name} tone={i % 2 ? "violet" : "cobalt"} />;
 
   return (
-    <div className="flex h-screen bg-[#080D1B] text-[#F4F7FF]">
+    <div className="flex h-screen bg-[#070B14] text-[#F1F5F9]">
       <aside
         className={`${activeConversationId ? "hidden md:flex" : "flex"} w-full flex-col border-r border-white/10 bg-[#101A2E]/70 backdrop-blur-2xl md:w-80`}
       >
@@ -78,7 +78,7 @@ export default function Messages() {
             <button
               onClick={() => navigate("/home")}
               aria-label="Back to home"
-              className="p-1.5 text-[#A8B5CC] transition hover:text-[#22D3EE]"
+              className="p-1.5 text-[#94A3B8] transition hover:text-[#67E8F9]"
             >
               <ArrowLeft size={18} />
             </button>
@@ -90,11 +90,11 @@ export default function Messages() {
               placeholder="Search people to message…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="peer w-full border border-white/10 bg-[#080D1B]/70 py-2.5 pl-10 pr-3 text-sm text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+              className="peer w-full border border-white/10 bg-[#070B14]/70 py-2.5 pl-10 pr-3 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]"
             />
             <Search
               size={16}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#A8B5CC] transition-colors peer-focus:text-[#22D3EE]"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] transition-colors peer-focus:text-[#67E8F9]"
             />
           </div>
         </div>
@@ -102,9 +102,9 @@ export default function Messages() {
         <div className="flex-1 overflow-y-auto">
           {searchQuery.trim() ? (
             searching ? (
-              <p className="p-4 text-sm text-[#A8B5CC]">Searching…</p>
+              <p className="p-4 text-sm text-[#94A3B8]">Searching…</p>
             ) : searchResults.length === 0 ? (
-              <p className="p-4 text-sm text-[#A8B5CC]">No users found</p>
+              <p className="p-4 text-sm text-[#94A3B8]">No users found</p>
             ) : (
               searchResults.map((u, i) => (
                 <button
@@ -115,15 +115,15 @@ export default function Messages() {
                   {avatar(u.name, i)}
                   <div className="min-w-0">
                     <p className="truncate text-sm font-bold">{u.name}</p>
-                    <p className="truncate text-xs text-[#A8B5CC]">{u.email}</p>
+                    <p className="truncate text-xs text-[#94A3B8]">{u.email}</p>
                   </div>
                 </button>
               ))
             )
           ) : convosLoading ? (
-            <p className="p-4 text-sm text-[#A8B5CC]">Loading conversations…</p>
+            <p className="p-4 text-sm text-[#94A3B8]">Loading conversations…</p>
           ) : conversations.length === 0 ? (
-            <p className="p-4 text-sm text-[#A8B5CC]">No conversations yet — search someone to start.</p>
+            <p className="p-4 text-sm text-[#94A3B8]">No conversations yet — search someone to start.</p>
           ) : (
             conversations.map((c, i) => (
               <button
@@ -134,7 +134,7 @@ export default function Messages() {
                 }}
                 className={`flex w-full items-center gap-3 border-b border-white/5 border-l-2 p-3 text-left transition hover:bg-white/5 ${
                   activeConversationId === c.conversation_id
-                    ? "border-l-[#22D3EE] bg-white/[0.06]"
+                    ? "border-l-[#67E8F9] bg-white/[0.06]"
                     : "border-l-transparent"
                 }`}
               >
@@ -150,9 +150,9 @@ export default function Messages() {
         {!activeConversationId ? (
           <div className="relative flex flex-1 items-center justify-center overflow-hidden">
             <Mandala />
-            <div className="relative flex flex-col items-center gap-3 text-center text-[#A8B5CC]">
+            <div className="relative flex flex-col items-center gap-3 text-center text-[#94A3B8]">
               <IconTile icon={MessageSquare} tone="cobalt" className="h-14 w-14" size={26} />
-              <p className="font-bold text-[#F4F7FF]">Your messages</p>
+              <p className="font-bold text-[#F1F5F9]">Your messages</p>
               <p className="max-w-xs text-sm">Select a conversation or search for someone to message</p>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function Messages() {
               <button
                 onClick={() => setActiveConversationId(null)}
                 aria-label="Back to conversations"
-                className="p-1.5 text-[#A8B5CC] transition hover:text-[#22D3EE] md:hidden"
+                className="p-1.5 text-[#94A3B8] transition hover:text-[#67E8F9] md:hidden"
               >
                 <ArrowLeft size={18} />
               </button>
@@ -178,8 +178,8 @@ export default function Messages() {
                     key={m.id}
                     className={`max-w-xs border px-4 py-2 text-sm md:max-w-md ${
                       mine
-                        ? "ml-auto border-[#2563EB] bg-[#2563EB] text-white"
-                        : "border-white/10 bg-[#101A2E] text-[#F4F7FF]"
+                        ? "ml-auto border-[#2F6BFF] bg-[#2F6BFF] text-white"
+                        : "border-white/10 bg-[#101A2E] text-[#F1F5F9]"
                     }`}
                   >
                     {m.content}
@@ -195,11 +195,11 @@ export default function Messages() {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Type a message…"
-                className="flex-1 border border-white/10 bg-[#080D1B]/70 px-4 py-2.5 text-sm text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+                className="flex-1 border border-white/10 bg-[#070B14]/70 px-4 py-2.5 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]"
               />
               <button
                 type="submit"
-                className="flex items-center gap-2 border border-[#2563EB] bg-[#2563EB] px-5 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-[#4A7FFF]"
+                className="flex items-center gap-2 border border-[#2F6BFF] bg-[#2F6BFF] px-5 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-[#4A7FFF]"
               >
                 Send <Send size={14} />
               </button>

@@ -14,21 +14,21 @@ const items = [
 const sideLink = ({ isActive }) =>
   `flex items-center gap-3 rounded-xl border-l-2 px-4 py-3 text-sm font-semibold transition ${
     isActive
-      ? "border-[#B8F34A] bg-[#2563EB]/20 text-[#F4F7FF] shadow-[inset_0_0_24px_rgba(37,99,235,0.08)]"
-      : "border-transparent text-[#A8B5CC] hover:bg-white/5 hover:text-[#F4F7FF]"
+      ? "border-[#2457E6] bg-[#2457E6]/10 text-[#202124]"
+      : "border-transparent text-[#6F737B] hover:bg-[#F1F2F4] hover:text-[#202124]"
   }`;
 
 const tabLink = ({ isActive }) =>
   `flex flex-1 flex-col items-center gap-1 py-2.5 text-[10px] font-bold uppercase tracking-[0.12em] transition ${
-    isActive ? "text-[#22D3EE]" : "text-[#A8B5CC]"
+    isActive ? "text-[#2457E6]" : "text-[#6F737B]"
   }`;
 
 export default function AppShell({ eyebrow, title, subtitle, actions, children, width = "max-w-5xl" }) {
   const { user, logout } = useAuth();
 
   return (
-    <div className="electric-app min-h-screen bg-[#080D1B] text-[#F4F7FF]">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-white/10 bg-[#101A2E]/65 shadow-[12px_0_60px_rgba(0,0,0,0.18)] backdrop-blur-2xl lg:flex">
+    <div className="app-shell min-h-screen bg-[#F8F7F3] text-[#202124]">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-[#E3E4E7] bg-white lg:flex">
         <div className="px-6 py-7">
           <Wordmark />
         </div>
@@ -40,18 +40,18 @@ export default function AppShell({ eyebrow, title, subtitle, actions, children, 
             </NavLink>
           ))}
         </nav>
-        <div className="border-t border-white/10 p-4">
+        <div className="border-t border-[#E3E4E7] p-4">
           <div className="flex items-center gap-3">
             <UserAvatar user={user} className="h-10 w-10 text-sm" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold">{user?.name}</p>
-              <p className="truncate text-xs text-[#A8B5CC]">{user?.email}</p>
+              <p className="truncate text-xs text-[#94A3B8]">{user?.email}</p>
             </div>
             <button
               onClick={logout}
               aria-label="Sign out"
               title="Sign out"
-              className="border border-white/10 p-2 text-[#A8B5CC] transition hover:border-rose-400/40 hover:text-rose-300"
+              className="border border-[#DCDDD8] p-2 text-[#6F737B] transition hover:border-rose-400/40 hover:text-rose-500"
             >
               <LogOut size={16} />
             </button>
@@ -59,12 +59,12 @@ export default function AppShell({ eyebrow, title, subtitle, actions, children, 
         </div>
       </aside>
 
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-[#101A2E]/80 px-5 py-3 backdrop-blur-2xl lg:hidden">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-[#E3E4E7] bg-white px-5 py-3 lg:hidden">
         <Wordmark className="text-lg" />
         <button
           onClick={logout}
           aria-label="Sign out"
-          className="border border-white/10 p-2 text-[#A8B5CC] transition hover:text-rose-300"
+          className="border border-[#DCDDD8] p-2 text-[#6F737B] transition hover:text-rose-500"
         >
           <LogOut size={16} />
         </button>
@@ -72,13 +72,13 @@ export default function AppShell({ eyebrow, title, subtitle, actions, children, 
 
       <main className="px-5 pb-28 pt-8 sm:px-8 lg:ml-64 lg:pb-16 lg:pt-12">
         <div className={`mx-auto w-full ${width}`}>
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4 rounded-3xl border border-white/10 bg-[#101A2E]/35 p-5 backdrop-blur-xl sm:p-7">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div className="min-w-0">
               {eyebrow && (
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.3em] text-[#B8F34A]">{eyebrow}</p>
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#2457E6]">{eyebrow}</p>
               )}
               <h1 className="text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl">{title}</h1>
-              {subtitle && <p className="mt-2 max-w-xl text-sm text-[#A8B5CC] sm:text-base">{subtitle}</p>}
+              {subtitle && <p className="mt-2 max-w-xl text-sm text-[#94A3B8] sm:text-base">{subtitle}</p>}
             </div>
             {actions}
           </div>
@@ -88,7 +88,7 @@ export default function AppShell({ eyebrow, title, subtitle, actions, children, 
 
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-white/10 bg-[#101A2E]/85 shadow-[0_-12px_40px_rgba(0,0,0,0.2)] backdrop-blur-2xl lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-[#E3E4E7] bg-white lg:hidden"
       >
         {items.map(({ to, label, icon: Icon }) => (
           <NavLink key={to} to={to} className={tabLink}>

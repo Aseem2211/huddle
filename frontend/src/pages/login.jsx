@@ -43,9 +43,9 @@ const SpinnerIcon = () => (
 );
 const LogoMark = () => (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="2" y="5" width="13" height="14" fill="#2563EB" />
-        <path d="M15 10l7-4v12l-7-4z" fill="#B8F34A" />
-        <rect x="5" y="8" width="3" height="3" fill="#22D3EE" />
+        <rect x="2" y="5" width="13" height="14" fill="#2F6BFF" />
+        <path d="M15 10l7-4v12l-7-4z" fill="#8B5CF6" />
+        <rect x="5" y="8" width="3" height="3" fill="#67E8F9" />
     </svg>
 );
 
@@ -66,27 +66,27 @@ function Mandala() {
         >
             {/* slow outer ring */}
             <g className="origin-center animate-[spin_120s_linear_infinite] motion-reduce:animate-none">
-                <circle r="292" stroke="#B8F34A" strokeOpacity="0.35" strokeDasharray="2 8" />
+                <circle r="292" stroke="#8B5CF6" strokeOpacity="0.35" strokeDasharray="2 8" />
                 {Array.from({ length: 48 }, (_, i) => (
-                    <circle key={i} cx="0" cy="-280" r="2.4" fill="#22D3EE" fillOpacity="0.7" transform={`rotate(${(360 / 48) * i})`} />
+                    <circle key={i} cx="0" cy="-280" r="2.4" fill="#67E8F9" fillOpacity="0.7" transform={`rotate(${(360 / 48) * i})`} />
                 ))}
-                {ring(24, "M0 -200 Q16 -235 0 -268 Q-16 -235 0 -200Z", "#B8F34A", { strokeOpacity: 0.6 })}
+                {ring(24, "M0 -200 Q16 -235 0 -268 Q-16 -235 0 -200Z", "#8B5CF6", { strokeOpacity: 0.6 })}
             </g>
 
             {/* counter-rotating middle ring */}
             <g className="origin-center animate-[spin_90s_linear_infinite_reverse] motion-reduce:animate-none">
-                <circle r="196" stroke="#2563EB" strokeOpacity="0.5" />
-                {ring(12, "M0 -120 Q34 -165 0 -205 Q-34 -165 0 -120Z", "#2563EB", { strokeOpacity: 0.8 })}
-                {ring(12, "M0 -150 Q10 -172 0 -190 Q-10 -172 0 -150Z", "#22D3EE", { strokeOpacity: 0.7 })}
+                <circle r="196" stroke="#2F6BFF" strokeOpacity="0.5" />
+                {ring(12, "M0 -120 Q34 -165 0 -205 Q-34 -165 0 -120Z", "#2F6BFF", { strokeOpacity: 0.8 })}
+                {ring(12, "M0 -150 Q10 -172 0 -190 Q-10 -172 0 -150Z", "#67E8F9", { strokeOpacity: 0.7 })}
             </g>
 
             {/* inner core */}
             <g className="origin-center animate-[spin_70s_linear_infinite] motion-reduce:animate-none">
-                <circle r="112" stroke="#B8F34A" strokeOpacity="0.5" />
-                {ring(8, "M0 -50 Q22 -80 0 -108 Q-22 -80 0 -50Z", "#B8F34A", { strokeOpacity: 0.85 })}
-                <circle r="46" stroke="#2563EB" strokeOpacity="0.7" />
-                <circle r="22" stroke="#22D3EE" strokeOpacity="0.7" />
-                <circle r="5" fill="#22D3EE" fillOpacity="0.8" />
+                <circle r="112" stroke="#8B5CF6" strokeOpacity="0.5" />
+                {ring(8, "M0 -50 Q22 -80 0 -108 Q-22 -80 0 -50Z", "#8B5CF6", { strokeOpacity: 0.85 })}
+                <circle r="46" stroke="#2F6BFF" strokeOpacity="0.7" />
+                <circle r="22" stroke="#67E8F9" strokeOpacity="0.7" />
+                <circle r="5" fill="#67E8F9" fillOpacity="0.8" />
             </g>
         </svg>
     );
@@ -94,10 +94,10 @@ function Mandala() {
 
 /* ---------- Shared field styles ---------- */
 const fieldWrap = "relative";
-const fieldIcon = "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#A8B5CC] transition-colors peer-focus:text-[#22D3EE]";
+const fieldIcon = "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#94A3B8] transition-colors peer-focus:text-[#67E8F9]";
 const fieldInput =
-    "peer w-full border border-white/10 bg-[#080D1B]/70 py-3.5 pl-11 pr-4 text-sm text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]";
-const labelCls = "block text-xs font-bold uppercase tracking-[0.18em] text-[#F4F7FF]/80";
+    "peer w-full border border-white/10 bg-[#070B14]/70 py-3.5 pl-11 pr-4 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]";
+const labelCls = "block text-xs font-bold uppercase tracking-[0.18em] text-[#F1F5F9]/80";
 
 export default function Login() {
     const { login } = useAuth();
@@ -134,35 +134,35 @@ export default function Login() {
     }
 
     return (
-        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#080D1B] px-5 py-12 text-[#F4F7FF]">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#070B14] px-5 py-12 text-[#F1F5F9]">
             {/* flat colour glows (no gradients), keeps the glassy depth */}
-            <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2563EB]/20 blur-[120px]" />
-            <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#B8F34A]/20 blur-[130px]" />
+            <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#2F6BFF]/20 blur-[120px]" />
+            <div aria-hidden="true" className="pointer-events-none absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-[#8B5CF6]/20 blur-[130px]" />
 
             <div className="relative w-full max-w-md">
                 <Mandala />
 
                 <section className="relative border border-white/10 bg-[#101A2E]/70 p-7 shadow-[0_0_80px_rgba(47,107,255,0.18)] backdrop-blur-2xl sm:p-10">
                     {/* sharp accent corners */}
-                    <span aria-hidden="true" className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-[#22D3EE]" />
-                    <span aria-hidden="true" className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-[#B8F34A]" />
+                    <span aria-hidden="true" className="absolute -left-px -top-px h-4 w-4 border-l-2 border-t-2 border-[#67E8F9]" />
+                    <span aria-hidden="true" className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-[#8B5CF6]" />
 
                     <div className="mb-10 flex items-center justify-between">
                         <div className="flex items-center gap-2.5 text-xl font-black tracking-tight">
                             <LogoMark />
-                            <span>HUD<span className="text-[#2563EB]">DLE</span></span>
+                            <span>HUD<span className="text-[#2F6BFF]">DLE</span></span>
                         </div>
-                        <span className="flex items-center gap-2 border border-[#22D3EE]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#22D3EE]">
-                            <span className="h-1.5 w-1.5 animate-pulse bg-[#22D3EE]" />
+                        <span className="flex items-center gap-2 border border-[#67E8F9]/30 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#67E8F9]">
+                            <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
                             Live
                         </span>
                     </div>
 
-                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#B8F34A]">Festival of lights, Huddle style</p>
+                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#8B5CF6]">Festival of lights, Huddle style</p>
                     <h1 className="text-4xl font-black leading-tight tracking-[-0.05em] sm:text-5xl">
-                        Welcome<br />back<span className="text-[#2563EB]">.</span>
+                        Welcome<br />back<span className="text-[#2F6BFF]">.</span>
                     </h1>
-                    <p className="mb-8 mt-3 text-sm text-[#A8B5CC]">Log in to your account and pick up where you left off.</p>
+                    <p className="mb-8 mt-3 text-sm text-[#94A3B8]">Log in to your account and pick up where you left off.</p>
 
                     {error && (
                         <div role="alert" className="mb-5 flex items-start gap-3 border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
@@ -205,7 +205,7 @@ export default function Login() {
                                     type="button"
                                     onClick={() => setShowPassword((s) => !s)}
                                     aria-label={showPassword ? "Hide password" : "Show password"}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#A8B5CC] transition hover:text-[#F4F7FF] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#94A3B8] transition hover:text-[#F1F5F9] focus:outline-none focus:ring-1 focus:ring-[#2F6BFF]"
                                 >
                                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                                 </button>
@@ -213,13 +213,13 @@ export default function Login() {
                         </div>
 
                         <div className="flex justify-end">
-                            <Link className="text-sm text-[#22D3EE] underline decoration-[#22D3EE]/40 underline-offset-4 transition hover:text-white" to="/forgot-password">
+                            <Link className="text-sm text-[#67E8F9] underline decoration-[#67E8F9]/40 underline-offset-4 transition hover:text-white" to="/forgot-password">
                                 Forgot password?
                             </Link>
                         </div>
 
                         <button
-                            className="group flex w-full items-center justify-center gap-3 border border-[#2563EB] bg-[#2563EB] px-5 py-3.5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_0_28px_rgba(47,107,255,0.35)] transition hover:bg-[#4A7FFF] focus:outline-none focus:ring-2 focus:ring-[#22D3EE] focus:ring-offset-2 focus:ring-offset-[#080D1B] disabled:cursor-not-allowed disabled:opacity-60"
+                            className="group flex w-full items-center justify-center gap-3 border border-[#2F6BFF] bg-[#2F6BFF] px-5 py-3.5 text-sm font-black uppercase tracking-[0.2em] text-white shadow-[0_0_28px_rgba(47,107,255,0.35)] transition hover:bg-[#4A7FFF] focus:outline-none focus:ring-2 focus:ring-[#67E8F9] focus:ring-offset-2 focus:ring-offset-[#070B14] disabled:cursor-not-allowed disabled:opacity-60"
                             type="submit"
                             disabled={submitting}
                         >
@@ -227,9 +227,9 @@ export default function Login() {
                         </button>
                     </form>
 
-                    <div className="mt-8 border-t border-white/10 pt-6 text-center text-sm text-[#A8B5CC]">
+                    <div className="mt-8 border-t border-white/10 pt-6 text-center text-sm text-[#94A3B8]">
                         Don't have an account?{" "}
-                        <Link className="font-bold text-[#B8F34A] underline decoration-[#B8F34A]/50 underline-offset-4 transition hover:text-white" to="/signup">
+                        <Link className="font-bold text-[#8B5CF6] underline decoration-[#8B5CF6]/50 underline-offset-4 transition hover:text-white" to="/signup">
                             Sign up
                         </Link>
                     </div>

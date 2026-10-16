@@ -46,7 +46,7 @@ export default function DMPanel({ socket, currentUser }) {
           <button
             onClick={() => setView("list")}
             aria-label="Back to conversations"
-            className="p-1.5 text-[#A8B5CC] transition hover:text-[#22D3EE]"
+            className="p-1.5 text-[#94A3B8] transition hover:text-[#67E8F9]"
           >
             <ArrowLeft size={18} />
           </button>
@@ -55,7 +55,7 @@ export default function DMPanel({ socket, currentUser }) {
 
         <div className="flex-1 space-y-2 overflow-y-auto p-4">
           {activeConversation && messages.length === 0 && (
-            <p className="pt-6 text-center text-sm text-[#A8B5CC]">No messages yet. Say hi.</p>
+            <p className="pt-6 text-center text-sm text-[#94A3B8]">No messages yet. Say hi.</p>
           )}
           {messages.map((m) => {
             const mine = m.sender_id === currentUser?.id;
@@ -64,8 +64,8 @@ export default function DMPanel({ socket, currentUser }) {
                 key={m.id}
                 className={`max-w-[80%] border px-3.5 py-2 text-sm ${
                   mine
-                    ? "ml-auto border-[#2563EB] bg-[#2563EB] text-white"
-                    : "border-white/10 bg-[#101A2E] text-[#F4F7FF]"
+                    ? "ml-auto border-[#2F6BFF] bg-[#2F6BFF] text-white"
+                    : "border-white/10 bg-[#101A2E] text-[#F1F5F9]"
                 }`}
               >
                 {m.content}
@@ -80,12 +80,12 @@ export default function DMPanel({ socket, currentUser }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message…"
-            className="flex-1 border border-white/10 bg-[#080D1B]/70 px-3.5 py-2.5 text-sm text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/60 focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+            className="flex-1 border border-white/10 bg-[#070B14]/70 px-3.5 py-2.5 text-sm text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/60 focus:border-[#2F6BFF] focus:ring-1 focus:ring-[#2F6BFF]"
           />
           <button
             type="submit"
             aria-label="Send"
-            className="flex items-center justify-center border border-[#2563EB] bg-[#2563EB] px-3.5 text-white transition hover:bg-[#4A7FFF]"
+            className="flex items-center justify-center border border-[#2F6BFF] bg-[#2F6BFF] px-3.5 text-white transition hover:bg-[#4A7FFF]"
           >
             <Send size={16} />
           </button>
@@ -97,7 +97,7 @@ export default function DMPanel({ socket, currentUser }) {
   return (
     <div className="h-full overflow-y-auto">
       {conversations.length === 0 ? (
-        <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-[#A8B5CC]">
+        <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-[#94A3B8]">
           <MessageSquare size={28} />
           <p className="text-sm">No conversations yet.</p>
         </div>

@@ -134,7 +134,7 @@ export default function Home() {
           <button
             onClick={handleStart}
             disabled={starting}
-            className="mt-7 inline-flex items-center gap-2.5 border border-white bg-white px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-[#080D1B] transition hover:bg-[#F4F7FF] focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-7 inline-flex items-center gap-2.5 border border-white bg-white px-6 py-3 text-xs font-black uppercase tracking-[0.2em] text-[#070B14] transition hover:bg-[#F1F5F9] focus-visible:outline-offset-4 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Plus size={16} strokeWidth={2.5} />
             {starting ? "Creating room…" : "New meeting"}
@@ -144,7 +144,7 @@ export default function Home() {
         <Card interactive className="p-7 lg:col-span-2">
           <IconTile icon={Users} tone="violet" className="h-12 w-12" size={22} />
           <h2 className="mt-6 text-xl font-bold tracking-[-0.02em]">Join with a code</h2>
-          <p className="mt-1 text-sm text-[#A8B5CC]">Paste the room code you were given.</p>
+          <p className="mt-1 text-sm text-[#94A3B8]">Paste the room code you were given.</p>
           <form onSubmit={handleJoin} className="mt-6">
             <label htmlFor="joinCode" className="sr-only">Room code</label>
             <div className="flex gap-2">
@@ -160,13 +160,13 @@ export default function Home() {
                   setJoinError("");
                 }}
                 placeholder="abc123xyz0"
-                className="w-full border border-white/10 bg-[#080D1B]/70 px-3.5 py-3 font-mono text-sm normal-case text-[#F4F7FF] outline-none transition placeholder:text-[#A8B5CC]/50 focus:border-[#B8F34A] focus:ring-1 focus:ring-[#B8F34A]"
+                className="w-full border border-white/10 bg-[#070B14]/70 px-3.5 py-3 font-mono text-sm normal-case text-[#F1F5F9] outline-none transition placeholder:text-[#94A3B8]/50 focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
               />
               <button
                 type="submit"
                 disabled={!joinCode.trim() || joining}
                 aria-label="Join meeting"
-                className="flex shrink-0 items-center justify-center border border-[#B8F34A] bg-[#B8F34A] px-4 text-white transition hover:bg-[#9F7AEA] disabled:cursor-not-allowed disabled:opacity-30"
+                className="flex shrink-0 items-center justify-center border border-[#8B5CF6] bg-[#8B5CF6] px-4 text-white transition hover:bg-[#9F7AEA] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <ArrowRight size={18} />
               </button>
@@ -196,7 +196,7 @@ export default function Home() {
             <div className="flex flex-col items-center gap-3 px-6 py-12 text-center">
               <IconTile icon={CalendarClock} tone="slate" className="h-12 w-12" size={22} />
               <p className="font-bold">No meetings yet</p>
-              <p className="max-w-xs text-sm text-[#A8B5CC]">Rooms you create will show up here so you can jump back in.</p>
+              <p className="max-w-xs text-sm text-[#94A3B8]">Rooms you create will show up here so you can jump back in.</p>
             </div>
           )}
 
@@ -217,7 +217,7 @@ export default function Home() {
                         </Pill>
                       )}
                     </div>
-                    <p className="mt-0.5 truncate text-xs text-[#A8B5CC]">
+                    <p className="mt-0.5 truncate text-xs text-[#94A3B8]">
                       {new Date(m.created_at).toLocaleString()} ·{" "}
                       <span className="font-mono normal-case">{m.room_id}</span>
                     </p>
@@ -226,14 +226,14 @@ export default function Home() {
                     onClick={() => copyCode(m.room_id)}
                     aria-label={`Copy room code ${m.room_id}`}
                     title="Copy code"
-                    className="border border-white/10 p-2 text-[#A8B5CC] transition hover:border-white/25 hover:text-[#F4F7FF]"
+                    className="border border-white/10 p-2 text-[#94A3B8] transition hover:border-white/25 hover:text-[#F1F5F9]"
                   >
-                    {copiedId === m.room_id ? <Check size={15} className="text-[#22D3EE]" /> : <Copy size={15} />}
+                    {copiedId === m.room_id ? <Check size={15} className="text-[#67E8F9]" /> : <Copy size={15} />}
                   </button>
                   <ArrowRight
                     size={16}
                     aria-hidden="true"
-                    className="hidden text-[#A8B5CC] transition group-hover:translate-x-1 group-hover:text-[#22D3EE] sm:block"
+                    className="hidden text-[#94A3B8] transition group-hover:translate-x-1 group-hover:text-[#67E8F9] sm:block"
                   />
                 </li>
               ))}
@@ -244,7 +244,7 @@ export default function Home() {
 
       {dmOpen && (
         <>
-          <div className="fixed inset-0 z-40 bg-[#080D1B]/60 backdrop-blur-sm" onClick={() => setDmOpen(false)} />
+          <div className="fixed inset-0 z-40 bg-[#070B14]/60 backdrop-blur-sm" onClick={() => setDmOpen(false)} />
           <div
             role="dialog"
             aria-label="Quick chat"
@@ -255,7 +255,7 @@ export default function Home() {
               <button
                 onClick={() => setDmOpen(false)}
                 aria-label="Close messages"
-                className="p-1.5 text-[#A8B5CC] transition hover:text-[#F4F7FF]"
+                className="p-1.5 text-[#94A3B8] transition hover:text-[#F1F5F9]"
               >
                 <X size={18} />
               </button>

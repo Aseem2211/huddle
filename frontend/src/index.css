@@ -2,95 +2,91 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --color-night: #080D1B;
-  --color-glass: #101a2e;
-  --color-cobalt: #2563EB;
-  --color-cobalt-hi: #4F82FF;
-  --color-live: #22D3EE;
-  --color-lime: #B8F34A;
-  --color-violet: #B8F34A;
-  --color-cloud: #F4F7FF;
-  --color-mute: #A8B5CC;
-  --shadow-glow: 0 0 44px rgba(37, 99, 235, 0.25);
-  --shadow-panel: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+  --color-night: #F8F7F3;
+  --color-glass: #FFFFFF;
+  --color-cobalt: #2457E6;
+  --color-cobalt-hi: #3769F0;
+  --color-live: #2457E6;
+  --color-violet: #2457E6;
+  --color-cloud: #202124;
+  --color-mute: #6F737B;
+  --shadow-glow: 0 8px 28px rgba(36, 87, 230, 0.12);
+  --shadow-panel: 0 14px 42px rgba(32, 33, 36, 0.07);
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+  font-family: var(--font-sans);
+  color: #202124;
+  background: #F8F7F3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
-html,
-body,
-#root {
-  min-height: 100%;
-}
-
+html, body, #root { min-height: 100%; }
 body {
   margin: 0;
-  background: radial-gradient(ellipse at 12% 0%, rgba(37,99,235,.18), transparent 38%), radial-gradient(ellipse at 92% 18%, rgba(34,211,238,.09), transparent 30%), #080D1B;
-  color: #F4F7FF;
+  background: #F8F7F3;
+  color: #202124;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid #2457E6; outline-offset: 3px; }
+::selection { background: rgba(36, 87, 230, .18); }
+* { scrollbar-width: thin; scrollbar-color: #C9CDD5 transparent; }
 
-:focus-visible {
-  outline: 2px solid #22D3EE;
-  outline-offset: 2px;
+/* Design-system compatibility layer: restyles the existing Tailwind UI without
+   changing its routes, handlers, state, or API calls. */
+[class*="bg-[#070B14]"], [class*="bg-[#101A2E]"], [class*="bg-[#070b14]"], [class*="bg-[#101a2e]"] {
+  background-color: #FFFFFF;
 }
+[class*="bg-[#2F6BFF]"], [class*="bg-[#2f6bff]"] { background-color: #2457E6; }
+[class*="bg-[#2F6BFF]/"], [class*="bg-[#2f6bff]/"] { background-color: #EAF0FF; }
+[class*="bg-[#4A7FFF]"], [class*="bg-[#8B5CF6]"], [class*="bg-[#9F7AEA]"] { background-color: #3769F0; }
+[class*="text-[#F1F5F9]"], [class*="text-[#f1f5f9]"] { color: #202124; }
+[class*="text-[#94A3B8]"], [class*="text-[#94a3b8]"], [class*="text-[#7FA6FF]"], [class*="text-[#B79BFF]"], [class*="text-[#67E8F9]"], [class*="text-[#8B5CF6]"] { color: #6F737B; }
+[class*="border-white/10"], [class*="border-white/15"], [class*="border-white/20"], [class*="border-white/5"] { border-color: #E3E4E7; }
+[class*="bg-white/[0.04]"], [class*="bg-white/[0.06]"], [class*="bg-white/[0.08]"], [class*="bg-white/5"], [class*="bg-white/10"] { background-color: #F1F2F4; }
+[class*="backdrop-blur"] { backdrop-filter: none !important; }
 
-::selection {
-  background: rgba(47, 107, 255, 0.45);
+/* Soft-rounded, balanced surfaces */
+section, article, aside, input, textarea, select, button, [role="dialog"] { border-radius: 12px; }
+input, textarea, select { background-color: #FFFFFF; color: #202124; border-color: #DCDDD8; }
+input::placeholder, textarea::placeholder { color: #92959B; }
+button { transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease; }
+button:active { transform: translateY(1px); }
+
+/* Auth screens: remove the old neon/glass backdrop and use clean editorial surfaces. */
+.auth-page, main.relative.min-h-screen { background: #F8F7F3; }
+.mandala-decoration { display: none; }
+
+/* Meeting room is intentionally the main focus: calm light chrome around a dark,
+   high-contrast video canvas keeps faces and shared screens readable. */
+.meeting-app { min-height: 100vh; background: #F8F7F3; color: #202124; }
+.meeting-topbar { background: rgba(255,255,255,.94); border-bottom: 1px solid #E3E4E7; }
+.meeting-stage { background: #F8F7F3; }
+.meeting-tile { border: 1px solid #DCDDD8; border-radius: 16px; background: #202124; box-shadow: 0 8px 24px rgba(32,33,36,.08); }
+.meeting-tile .meeting-label { border-radius: 0 10px 0 0; background: rgba(32,33,36,.82); color: #fff; }
+.meeting-tile .meeting-avatar { border-radius: 18px; background: #2457E6; }
+.meeting-footer { background: rgba(255,255,255,.97); border-top: 1px solid #E3E4E7; box-shadow: 0 -8px 24px rgba(32,33,36,.04); }
+.meeting-control { min-height: 46px; border-radius: 12px; border: 1px solid #DCDDD8; background: #F1F2F4; color: #202124; }
+.meeting-control:hover { background: #E7E9ED; border-color: #C9CDD5; }
+.meeting-control.is-on { background: #2457E6; border-color: #2457E6; color: #fff; }
+.meeting-control.is-danger { background: #D92D3A; border-color: #D92D3A; color: #fff; }
+.meeting-control.is-danger:hover { background: #BB2330; }
+.meeting-room-code { border: 1px solid #DCDDD8; background: #fff; border-radius: 10px; color: #4E535B; }
+.meeting-status { border: 1px solid #DCDDD8; background: #fff; border-radius: 999px; color: #4E535B; }
+
+@media (max-width: 640px) {
+  .meeting-footer { gap: 8px; padding: 10px; }
+  .meeting-control { min-width: 44px; padding-inline: 10px; }
 }
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
-
-
-/* Electric Night glass design system */
-:root {
-  --vv-night: #080D1B;
-  --vv-glass: rgba(16, 26, 46, .72);
-  --vv-line: rgba(168, 181, 204, .16);
-  --vv-cobalt: #2563EB;
-  --vv-cyan: #22D3EE;
-  --vv-lime: #B8F34A;
-  --vv-white: #F4F7FF;
-  --vv-muted: #A8B5CC;
-}
-body { background-attachment: fixed; }
-button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
-input, textarea, select {
-  border-radius: 14px !important;
-  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
-}
-input:focus, textarea:focus, select:focus {
-  border-color: rgba(34,211,238,.72) !important;
-  box-shadow: 0 0 0 3px rgba(34,211,238,.10), 0 0 24px rgba(37,99,235,.10);
-}
-button { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease; }
-button:not(:disabled):hover { transform: translateY(-1px); }
-button:disabled { cursor: not-allowed; opacity: .58; }
-/* Give the app's existing panels consistent glass depth without changing their layout. */
-[class*="bg-[#101A2E]"], [class*="bg-[#101a2e]"], [class*="bg-[#101A2E]/"], [class*="bg-[#101a2e]/"] {
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-}
-[class*="border-white/10"] { border-color: var(--vv-line) !important; }
-::selection { color: var(--vv-white); background: rgba(37,99,235,.48); }
-@keyframes electric-pulse { 0%,100% { opacity:.65 } 50% { opacity:1 } }
-@media (prefers-reduced-motion: no-preference) {
-  a[class*="transition"]:hover { transition-duration: .18s; }
-}
+[class*="text-[#2F6BFF]"], [class*="text-[#2f6bff]"], [class*="text-[#B79BFF]"], [class*="text-[#7FA6FF]"] { color: #2457E6; }
+[class*="bg-[#8B5CF6]/"], [class*="bg-[#8b5cf6]/"], [class*="bg-[#67E8F9]/"] { background-color: #EAF0FF; }
+[class*="border-[#67E8F9]"], [class*="border-[#8B5CF6]"], [class*="border-[#2F6BFF]"] { border-color: #2457E6; }

@@ -76,7 +76,7 @@ export default function VerifyOtp() {
   return (
     <AuthShell
       eyebrow="One last step"
-      title={<>Verify your<br />email<span className="text-[#2563EB]">.</span></>}
+      title={<>Verify your<br />email<span className="text-[#2F6BFF]">.</span></>}
       subtitle={`We sent a 6-digit code to ${cleanEmail || "your email"}. It expires in 10 minutes. Check your spam folder if you don't see it.`}
       footer={
         <>
@@ -85,12 +85,12 @@ export default function VerifyOtp() {
             type="button"
             onClick={handleResend}
             disabled={resending || cooldown > 0}
-            className="font-bold text-[#22D3EE] underline decoration-[#22D3EE]/40 underline-offset-4 transition hover:text-white disabled:cursor-not-allowed disabled:text-[#A8B5CC] disabled:no-underline"
+            className="font-bold text-[#67E8F9] underline decoration-[#67E8F9]/40 underline-offset-4 transition hover:text-white disabled:cursor-not-allowed disabled:text-[#94A3B8] disabled:no-underline"
           >
             {resending ? "Sending…" : cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
           </button>
           <span className="mx-2 text-white/20">·</span>
-          <Link className="font-bold text-[#B8F34A] underline decoration-[#B8F34A]/50 underline-offset-4 transition hover:text-white" to="/login">
+          <Link className="font-bold text-[#8B5CF6] underline decoration-[#8B5CF6]/50 underline-offset-4 transition hover:text-white" to="/login">
             Back to login
           </Link>
         </>

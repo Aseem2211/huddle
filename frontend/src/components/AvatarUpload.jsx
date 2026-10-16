@@ -24,7 +24,7 @@ export function UserAvatar({ user, className = "h-8 w-8 text-xs" }) {
   return url ? (
     <img src={url} alt="" className={`${className} object-cover`} />
   ) : (
-    <span className={`${className} flex items-center justify-center bg-[#2563EB] font-bold text-white`}>
+    <span className={`${className} flex items-center justify-center bg-[#2F6BFF] font-bold text-white`}>
       {initials}
     </span>
   );
@@ -93,17 +93,17 @@ export default function AvatarUpload({ currentAvatarUrl, onUploadSuccess, fallba
         onClick={() => fileInputRef.current?.click()}
         disabled={uploading}
         aria-label="Change profile photo"
-        className="group relative h-28 w-28 overflow-hidden border border-white/15 bg-[#080D1B] focus:outline-none focus:ring-2 focus:ring-[#22D3EE]"
+        className="group relative h-28 w-28 overflow-hidden border border-white/15 bg-[#070B14] focus:outline-none focus:ring-2 focus:ring-[#67E8F9]"
       >
         {preview ? (
           <img src={preview} alt="Profile" className="h-full w-full object-cover" />
         ) : (
-          <span className="flex h-full w-full items-center justify-center bg-[#2563EB] text-4xl font-black text-white">
+          <span className="flex h-full w-full items-center justify-center bg-[#2F6BFF] text-4xl font-black text-white">
             {fallbackInitial}
           </span>
         )}
         <span
-          className={`absolute inset-0 flex items-center justify-center bg-[#080D1B]/70 text-[#F4F7FF] transition ${
+          className={`absolute inset-0 flex items-center justify-center bg-[#070B14]/70 text-[#F1F5F9] transition ${
             uploading ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus:opacity-100"
           }`}
         >
@@ -128,7 +128,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUploadSuccess, fallba
         {uploading ? "Uploading…" : "Change photo"}
       </button>
 
-      <p className="text-xs text-[#A8B5CC]">JPEG, PNG or WEBP, up to 5MB</p>
+      <p className="text-xs text-[#94A3B8]">JPEG, PNG or WEBP, up to 5MB</p>
 
       {error && (
         <div className="w-full">
