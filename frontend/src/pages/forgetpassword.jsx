@@ -82,21 +82,21 @@ const ForgotPassword = () => {
   return (
     <AuthShell
       eyebrow="Account recovery"
-      title={<>Reset your<br />password<span className="text-[#2F6BFF]">.</span></>}
+      title={<>Reset your<br />password<span className="text-[#2563EB]">.</span></>}
       subtitle={
         step === 1
           ? "Enter your email and we'll send you a 6-digit code."
           : "Enter the code we sent and choose a new password."
       }
       footer={
-        <Link className="font-bold text-[#8B5CF6] underline decoration-[#8B5CF6]/50 underline-offset-4 transition hover:text-white" to="/login">
+        <Link className="font-bold text-[#B8F34A] underline decoration-[#B8F34A]/50 underline-offset-4 transition hover:text-white" to="/login">
           Back to login
         </Link>
       }
     >
       <div className="mb-6 flex gap-1.5" aria-hidden="true">
         {[1, 2].map((n) => (
-          <span key={n} className={`h-1 flex-1 transition-colors ${n <= step ? "bg-[#2F6BFF]" : "bg-white/10"}`} />
+          <span key={n} className={`h-1 flex-1 transition-colors ${n <= step ? "bg-[#2563EB]" : "bg-white/10"}`} />
         ))}
       </div>
 
@@ -167,7 +167,7 @@ const ForgotPassword = () => {
               setError("");
               setMessage("");
             }}
-            className="w-full text-center text-xs font-bold uppercase tracking-[0.18em] text-[#94A3B8] transition hover:text-[#67E8F9]"
+            className="w-full text-center text-xs font-bold uppercase tracking-[0.18em] text-[#A8B5CC] transition hover:text-[#22D3EE]"
           >
             Use a different email
           </button>

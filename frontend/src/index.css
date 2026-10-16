@@ -2,15 +2,16 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --color-night: #070b14;
+  --color-night: #080D1B;
   --color-glass: #101a2e;
-  --color-cobalt: #2f6bff;
-  --color-cobalt-hi: #4a7fff;
-  --color-live: #67e8f9;
-  --color-violet: #8b5cf6;
-  --color-cloud: #f1f5f9;
-  --color-mute: #94a3b8;
-  --shadow-glow: 0 0 40px rgba(47, 107, 255, 0.28);
+  --color-cobalt: #2563EB;
+  --color-cobalt-hi: #4F82FF;
+  --color-live: #22D3EE;
+  --color-lime: #B8F34A;
+  --color-violet: #B8F34A;
+  --color-cloud: #F4F7FF;
+  --color-mute: #A8B5CC;
+  --shadow-glow: 0 0 44px rgba(37, 99, 235, 0.25);
   --shadow-panel: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
 }
 
@@ -26,15 +27,15 @@ body,
 
 body {
   margin: 0;
-  background: #070b14;
-  color: #f1f5f9;
+  background: radial-gradient(ellipse at 12% 0%, rgba(37,99,235,.18), transparent 38%), radial-gradient(ellipse at 92% 18%, rgba(34,211,238,.09), transparent 30%), #080D1B;
+  color: #F4F7FF;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
 :focus-visible {
-  outline: 2px solid #67e8f9;
+  outline: 2px solid #22D3EE;
   outline-offset: 2px;
 }
 
@@ -55,4 +56,41 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+
+/* Electric Night glass design system */
+:root {
+  --vv-night: #080D1B;
+  --vv-glass: rgba(16, 26, 46, .72);
+  --vv-line: rgba(168, 181, 204, .16);
+  --vv-cobalt: #2563EB;
+  --vv-cyan: #22D3EE;
+  --vv-lime: #B8F34A;
+  --vv-white: #F4F7FF;
+  --vv-muted: #A8B5CC;
+}
+body { background-attachment: fixed; }
+button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+input, textarea, select {
+  border-radius: 14px !important;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(34,211,238,.72) !important;
+  box-shadow: 0 0 0 3px rgba(34,211,238,.10), 0 0 24px rgba(37,99,235,.10);
+}
+button { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease; }
+button:not(:disabled):hover { transform: translateY(-1px); }
+button:disabled { cursor: not-allowed; opacity: .58; }
+/* Give the app's existing panels consistent glass depth without changing their layout. */
+[class*="bg-[#101A2E]"], [class*="bg-[#101a2e]"], [class*="bg-[#101A2E]/"], [class*="bg-[#101a2e]/"] {
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+[class*="border-white/10"] { border-color: var(--vv-line) !important; }
+::selection { color: var(--vv-white); background: rgba(37,99,235,.48); }
+@keyframes electric-pulse { 0%,100% { opacity:.65 } 50% { opacity:1 } }
+@media (prefers-reduced-motion: no-preference) {
+  a[class*="transition"]:hover { transition-duration: .18s; }
 }

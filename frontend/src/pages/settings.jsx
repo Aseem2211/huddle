@@ -72,7 +72,7 @@ export default function Settings() {
           <IconTile icon={KeyRound} tone="cobalt" />
           <div>
             <h2 className="text-base font-bold">Change password</h2>
-            <p className="text-sm text-[#94A3B8]">Use at least 8 characters.</p>
+            <p className="text-sm text-[#A8B5CC]">Use at least 8 characters.</p>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function Settings() {
         <IconTile icon={MailCheck} tone="slate" />
         <div className="flex-1">
           <h2 className="text-base font-bold">Email verification</h2>
-          <p className="text-sm text-[#94A3B8]">OTP verification flow.</p>
+          <p className="text-sm text-[#A8B5CC]">OTP verification flow.</p>
         </div>
         <Pill tone="violet">Coming soon</Pill>
       </Card>

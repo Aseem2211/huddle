@@ -102,22 +102,22 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
   return (
     <div
       className={`relative aspect-video overflow-hidden border bg-[#101A2E] transition-all duration-150 ${
-        speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
+        speaking ? "border-[#22D3EE] ring-2 ring-[#22D3EE]" : "border-white/10"
       }`}
     >
       <video ref={videoRef} autoPlay playsInline muted={muted} className="h-full w-full object-cover" />
       {videoOff && (
         <div className="absolute inset-0 flex items-center justify-center bg-[#101A2E]">
-          <span className="flex h-20 w-20 items-center justify-center bg-[#2F6BFF] text-3xl font-black text-white">
+          <span className="flex h-20 w-20 items-center justify-center bg-[#2563EB] text-3xl font-black text-white">
             {initial}
           </span>
         </div>
       )}
-      <span className="absolute bottom-0 left-0 flex max-w-full items-center gap-2 bg-[#070B14]/85 px-3 py-1.5 text-xs font-semibold text-[#F1F5F9] backdrop-blur-md">
-        {speaking && <span className="h-1.5 w-1.5 shrink-0 animate-pulse bg-[#67E8F9]" />}
+      <span className="absolute bottom-0 left-0 flex max-w-full items-center gap-2 bg-[#080D1B]/85 px-3 py-1.5 text-xs font-semibold text-[#F4F7FF] backdrop-blur-md">
+        {speaking && <span className="h-1.5 w-1.5 shrink-0 animate-pulse bg-[#22D3EE]" />}
         <span className="truncate">{label}</span>
         {isSelf && (
-          <span className="border border-[#2F6BFF]/50 bg-[#2F6BFF]/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.14em] text-[#7FA6FF]">
+          <span className="border border-[#2563EB]/50 bg-[#2563EB]/20 px-1.5 py-px text-[9px] font-bold uppercase tracking-[0.14em] text-[#7FA6FF]">
             You
           </span>
         )}
@@ -129,9 +129,9 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
 
 function ControlButton({ onClick, variant = "default", label, children }) {
   const styles = {
-    default: "border-white/15 bg-white/[0.06] text-[#F1F5F9] hover:bg-white/10",
+    default: "border-white/15 bg-white/[0.06] text-[#F4F7FF] hover:bg-white/10",
     off: "border-rose-400/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25",
-    on: "border-[#2F6BFF] bg-[#2F6BFF] text-white hover:bg-[#4A7FFF]",
+    on: "border-[#2563EB] bg-[#2563EB] text-white hover:bg-[#4A7FFF]",
     leave: "border-rose-500 bg-rose-500 text-white hover:bg-rose-600",
   };
   return (
@@ -139,7 +139,7 @@ function ControlButton({ onClick, variant = "default", label, children }) {
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={`flex h-12 min-w-12 items-center justify-center gap-2 border px-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#67E8F9] lg:px-4 ${styles[variant]}`}
+      className={`flex h-12 min-w-12 items-center justify-center gap-2 border px-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22D3EE] lg:px-4 ${styles[variant]}`}
     >
       {children}
       <span className="hidden text-[11px] font-bold uppercase tracking-[0.14em] lg:inline">{label}</span>
@@ -305,7 +305,7 @@ export default function Room() {
 
   if (status === "error") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#070B14] text-[#F1F5F9]">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#080D1B] text-[#F4F7FF]">
         <p className="text-lg font-bold">{errorMsg}</p>
         <button
           onClick={() => navigate("/home")}
@@ -318,24 +318,24 @@ export default function Room() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#070B14] text-[#F1F5F9]">
+    <div className="flex min-h-screen flex-col bg-[#080D1B] text-[#F4F7FF]">
       <header className="flex items-center justify-between gap-3 border-b border-white/5 px-4 py-3 sm:px-6 sm:py-4">
         <div className="flex items-center gap-4">
           <LogoMark />
           <button
             onClick={copyRoomCode}
-            className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] text-[#94A3B8] transition hover:border-white/25 hover:text-[#F1F5F9]"
+            className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] text-[#A8B5CC] transition hover:border-white/25 hover:text-[#F4F7FF]"
           >
             {roomId}
-            {copied ? <Check size={14} className="text-[#67E8F9]" /> : <Copy size={14} />}
+            {copied ? <Check size={14} className="text-[#22D3EE]" /> : <Copy size={14} />}
           </button>
         </div>
-        <span className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#94A3B8]">
+        <span className="flex items-center gap-2 border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#A8B5CC]">
           {status === "connecting" ? (
             "Connecting…"
           ) : (
             <>
-              <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
+              <span className="h-1.5 w-1.5 animate-pulse bg-[#22D3EE]" />
               <Users size={14} />
               {remoteEntries.length + 1} in call
             </>
