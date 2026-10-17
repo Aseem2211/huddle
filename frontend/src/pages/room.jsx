@@ -1,14 +1,14 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useAuth } from "../context/Authcontext.jsx";
-import { joinRoom } from "../services/roomapi.js";
 import { getLocalStream } from "../webRTC/getlocalstream.js";
 import { initSignaling } from "../webRTC/signaling.js";
 import { startScreenShare, stopScreenShare } from "../webRTC/screenshare.js";
 import ChatPanel from "../components/common/chatpannel.jsx";
 import { useChat } from "../webRTC/useChat.js";
+import useRoomAccess from "../webRTC/useRoomAccess.js";
+import HostControls from "../components/HostControls.jsx";
 import ShareRoom from "./share.jsx";
 import { LogoMark } from "../components/ui/shared";
 import {
@@ -30,7 +30,7 @@ const SOCKET_URL = (
   import.meta.env.VITE_API_URL ||
   "https://huddle-g0v2.onrender.com"
 ).replace(/\/$/, "").replace(/\/api$/, "");
-<ShareRoom roomId={roomId} />
+
 function useActiveSpeaker(entries) {
   const [activeId, setActiveId] = useState(null);
   const key = entries
@@ -87,7 +87,7 @@ function useActiveSpeaker(entries) {
     return () => {
       clearInterval(timer);
       nodes.forEach((n) => n.source.disconnect());
-      ctx.close().catch(() => { });
+      ctx.close().catch(() => {});
     };
   }, [key]);
 
@@ -102,8 +102,9 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
 
   return (
     <div
-      className={`meeting-tile relative aspect-video overflow-hidden border transition-all duration-150 ${speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
-        }`}
+      className={`meeting-tile relative aspect-video overflow-hidden border transition-all duration-150 ${
+        speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
+      }`}
     >
       <video ref={videoRef} autoPlay playsInline muted={muted} className="h-full w-full object-cover" />
       {videoOff && (
@@ -148,9 +149,6 @@ function ControlButton({ onClick, variant = "default", label, children }) {
 }
 
 export default function Room() {
-  const {  isHost, accessMode, requests, respond, changeMode, deleteRoom } =
-  useRoomAccess(socket, roomId);
-const [showEnd, setShowEnd] = useState(false);
   const { roomId: rawRoomId } = useParams();
   const roomId = (rawRoomId || "").toLowerCase();
   const navigate = useNavigate();
@@ -167,19 +165,53 @@ const [showEnd, setShowEnd] = useState(false);
   const [copied, setCopied] = useState(false);
   const [displayedLocalStream, setDisplayedLocalStream] = useState(null);
   const [names, setNames] = useState({});
+  const [showEnd, setShowEnd] = useState(false);
+  const [hostOpen, setHostOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const socketRef = useRef(null);
   const localStreamRef = useRef(null);
   const peersRef = useRef(null);
   const cleanupSignalingRef = useRef(null);
   const screenStreamRef = useRef(null);
 
+  const {
+    status: accessStatus,
+    isHost,
+    accessMode,
+    requests,
+    respond,
+    changeMode,
+    deleteRoom,
+  } = useRoomAccess(chatSocket, roomId);
+
   const { messages, sendMessage } = useChat(chatSocket, roomId, user);
 
   useEffect(() => {
+    if (accessStatus !== "allowed" || !chatSocket) return;
     let cancelled = false;
-    async function setup() {
+
+    const onExisting = (list) => {
+      setNames((prev) => ({
+        ...prev,
+        ...Object.fromEntries((list || []).map((u) => [u.socketId, u.name])),
+      }));
+    };
+    const onJoined = (u) => {
+      setNames((prev) => ({ ...prev, [u.socketId]: u.name }));
+    };
+    const handleRemoteStreams = (socketId, remoteStream) => {
+      setRemoteStreams((prev) => ({ ...prev, [socketId]: remoteStream }));
+    };
+    const handleUserLeft = (socketId) => {
+      setRemoteStreams((prev) => {
+        const copy = { ...prev };
+        delete copy[socketId];
+        return copy;
+      });
+    };
+
+    async function startCall() {
       try {
-        await joinRoom(roomId);
         const stream = await getLocalStream();
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
@@ -189,56 +221,51 @@ const [showEnd, setShowEnd] = useState(false);
         setLocalStream(stream);
         setDisplayedLocalStream(stream);
 
-        const socket = io(SOCKET_URL, { auth: { token } });
-        socketRef.current = socket;
-        setChatSocket(socket);
-
-        const handleRemoteStreams = (socketId, remoteStream) => {
-          setRemoteStreams((prev) => ({ ...prev, [socketId]: remoteStream }));
-        };
-        const handleUserLeft = (socketId) => {
-          setRemoteStreams((prev) => {
-            const copy = { ...prev };
-            delete copy[socketId];
-            return copy;
-          });
-        };
-
-        const { peers, cleanup } = initSignaling(socket, stream, handleRemoteStreams, handleUserLeft);
+        const { peers, cleanup } = initSignaling(chatSocket, stream, handleRemoteStreams, handleUserLeft);
         peersRef.current = peers;
         cleanupSignalingRef.current = cleanup;
-        socket.on("existing-users", (list) => {
-          setNames((prev) => ({
-            ...prev,
-            ...Object.fromEntries((list || []).map((u) => [u.socketId, u.name])),
-          }));
-        });
-        socket.on("user-joined", (u) => {
-          setNames((prev) => ({ ...prev, [u.socketId]: u.name }));
-        });
-        socket.emit("join-room", { roomId, userId: user.id });
+
+        chatSocket.on("existing-users", onExisting);
+        chatSocket.on("user-joined", onJoined);
+        chatSocket.emit("join-room", { roomId });
         setStatus("ready");
       } catch (err) {
-        console.error("Failed to join", err);
+        console.error("Failed to start call", err);
         if (!cancelled) {
           setStatus("error");
-          setErrorMsg(err?.response?.status === 404 ? "Room not found" : "Could not reach");
+          setErrorMsg("Could not access camera or microphone");
         }
       }
     }
-    setup();
+    startCall();
 
     return () => {
       cancelled = true;
-      socketRef.current?.emit("leave-room");
+      chatSocket.emit("leave-room");
+      chatSocket.off("existing-users", onExisting);
+      chatSocket.off("user-joined", onJoined);
       cleanupSignalingRef.current?.();
-      socketRef.current?.disconnect();
+      cleanupSignalingRef.current = null;
       localStreamRef.current?.getTracks().forEach((t) => t.stop());
       localStreamRef.current = null;
       screenStreamRef.current?.getTracks().forEach((t) => t.stop());
       screenStreamRef.current = null;
+      setLocalStream(null);
+      setDisplayedLocalStream(null);
+      setRemoteStreams({});
     };
-  }, [roomId]);
+  }, [accessStatus, chatSocket, roomId]);
+
+  useEffect(() => {
+    const socket = io(SOCKET_URL, { auth: { token } });
+    socketRef.current = socket;
+    setChatSocket(socket);
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+      setChatSocket(null);
+    };
+  }, [roomId, token]);
 
   const remoteEntries = Object.entries(remoteStreams);
   const participantCount = remoteEntries.length + 1;
@@ -306,6 +333,28 @@ const [showEnd, setShowEnd] = useState(false);
     }
   };
 
+  const gateMessages = {
+    checking: "Checking room...",
+    waiting: "Waiting for the host to let you in...",
+    denied: "The host did not let you into this room.",
+    "not-found": "Room not found",
+    deleted: "The host ended and deleted this room.",
+  };
+
+  if (gateMessages[accessStatus]) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#070B14] text-[#F1F5F9]">
+        <p className="text-lg font-bold">{gateMessages[accessStatus]}</p>
+        <button
+          onClick={() => navigate("/home")}
+          className="border border-white/15 bg-white/[0.06] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] transition hover:bg-white/10"
+        >
+          Back to home
+        </button>
+      </div>
+    );
+  }
+
   if (status === "error") {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-5 bg-[#070B14] text-[#F1F5F9]">
@@ -333,17 +382,33 @@ const [showEnd, setShowEnd] = useState(false);
             {copied ? <Check size={14} className="text-[#67E8F9]" /> : <Copy size={14} />}
           </button>
         </div>
-        <span className="meeting-status flex items-center gap-2 px-3 py-1.5 text-xs font-bold tracking-[0.02em]">
-          {status === "connecting" ? (
-            "Connecting…"
-          ) : (
-            <>
-              <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
-              <Users size={14} />
-              {remoteEntries.length + 1} in call
-            </>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShareOpen((o) => !o)}
+            className="meeting-status px-3 py-1.5 text-xs font-bold tracking-[0.02em]"
+          >
+            Share
+          </button>
+          {isHost && (
+            <button
+              onClick={() => setHostOpen((o) => !o)}
+              className="meeting-status px-3 py-1.5 text-xs font-bold tracking-[0.02em]"
+            >
+              Host{requests.length > 0 ? ` (${requests.length})` : ""}
+            </button>
           )}
-        </span>
+          <span className="meeting-status flex items-center gap-2 px-3 py-1.5 text-xs font-bold tracking-[0.02em]">
+            {status === "connecting" ? (
+              "Connecting…"
+            ) : (
+              <>
+                <span className="h-1.5 w-1.5 animate-pulse bg-[#67E8F9]" />
+                <Users size={14} />
+                {remoteEntries.length + 1} in call
+              </>
+            )}
+          </span>
+        </div>
       </header>
 
       <main className="meeting-stage flex-1 px-4 pb-28 pt-6 sm:px-6">
@@ -388,10 +453,61 @@ const [showEnd, setShowEnd] = useState(false);
         <ControlButton onClick={() => setChatOpen((o) => !o)} variant={chatOpen ? "on" : "default"} label="Chat">
           <MessageSquare size={18} />
         </ControlButton>
-        <ControlButton onClick={handleLeave} variant="leave" label="Leave call">
+        <ControlButton
+          onClick={() => (isHost ? setShowEnd(true) : handleLeave())}
+          variant="leave"
+          label="Leave call"
+        >
           <PhoneOff size={18} />
         </ControlButton>
       </footer>
+
+      {(shareOpen || (isHost && hostOpen)) && (
+        <div className="fixed right-4 top-16 z-50 w-80 space-y-3">
+          {shareOpen && (
+            <div className="border border-white/10 bg-[#101A2E] p-4">
+              <ShareRoom roomId={roomId} />
+            </div>
+          )}
+          {isHost && hostOpen && (
+            <div className="border border-white/10">
+              <HostControls
+                accessMode={accessMode}
+                changeMode={changeMode}
+                requests={requests}
+                respond={respond}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {showEnd && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60">
+          <div className="w-72 space-y-3 border border-white/10 bg-[#101A2E] p-6 text-[#F1F5F9]">
+            <p className="font-bold">End this meeting?</p>
+            <button
+              onClick={async () => {
+                try {
+                  await deleteRoom();
+                } catch (err) {
+                  console.error("Delete failed", err);
+                }
+                handleLeave();
+              }}
+              className="block w-full bg-rose-600 px-4 py-2 text-sm font-bold"
+            >
+              Delete room
+            </button>
+            <button onClick={handleLeave} className="block w-full bg-slate-700 px-4 py-2 text-sm font-bold">
+              Just leave
+            </button>
+            <button onClick={() => setShowEnd(false)} className="block w-full bg-slate-800 px-4 py-2 text-sm font-bold">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {chatOpen && (
         <ChatPanel

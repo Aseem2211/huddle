@@ -1,13 +1,14 @@
+
 const registerDmHandlers=require("./dmSocket.js");
 const {register,canJoin}=require("./roomAccess");
 io.on("connection", (socket) => {
   console.log("new socket connection:", socket.id);
   register(io,socket);
-  socket.on("join-room", ({ roomId, userId }) => {
-    socket.on("join-room", async ({ roomCode }) => {
-  if (!(await canJoin(roomId, socket.user.id))) {
-    return socket.emit("join-denied", { reason: "not-allowed" });
-  }
+  socket.on("join-room", async ({ roomId, userId }) => {
+    
+    if (!(await canJoin(roomId, socket.user.id))) {
+      return socket.emit("join-denied", { reason: "not-allowed" });
+    }
 
     socket.join(roomId);
     socket.roomId = roomId;
