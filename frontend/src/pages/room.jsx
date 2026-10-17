@@ -9,6 +9,7 @@ import { initSignaling } from "../webRTC/signaling.js";
 import { startScreenShare, stopScreenShare } from "../webRTC/screenshare.js";
 import ChatPanel from "../components/common/chatpannel.jsx";
 import { useChat } from "../webRTC/useChat.js";
+import ShareRoom from "./share.jsx";
 import { LogoMark } from "../components/ui/shared";
 import {
   Mic,
@@ -29,7 +30,7 @@ const SOCKET_URL = (
   import.meta.env.VITE_API_URL ||
   "https://huddle-g0v2.onrender.com"
 ).replace(/\/$/, "").replace(/\/api$/, "");
-
+<ShareRoom roomId={roomId} />
 function useActiveSpeaker(entries) {
   const [activeId, setActiveId] = useState(null);
   const key = entries
@@ -86,7 +87,7 @@ function useActiveSpeaker(entries) {
     return () => {
       clearInterval(timer);
       nodes.forEach((n) => n.source.disconnect());
-      ctx.close().catch(() => {});
+      ctx.close().catch(() => { });
     };
   }, [key]);
 
@@ -101,9 +102,8 @@ function VideoTile({ stream, label, muted, speaking, videoOff, initial, micOff, 
 
   return (
     <div
-      className={`meeting-tile relative aspect-video overflow-hidden border transition-all duration-150 ${
-        speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
-      }`}
+      className={`meeting-tile relative aspect-video overflow-hidden border transition-all duration-150 ${speaking ? "border-[#67E8F9] ring-2 ring-[#67E8F9]" : "border-white/10"
+        }`}
     >
       <video ref={videoRef} autoPlay playsInline muted={muted} className="h-full w-full object-cover" />
       {videoOff && (
@@ -148,6 +148,9 @@ function ControlButton({ onClick, variant = "default", label, children }) {
 }
 
 export default function Room() {
+  const {  isHost, accessMode, requests, respond, changeMode, deleteRoom } =
+  useRoomAccess(socket, roomId);
+const [showEnd, setShowEnd] = useState(false);
   const { roomId: rawRoomId } = useParams();
   const roomId = (rawRoomId || "").toLowerCase();
   const navigate = useNavigate();
@@ -243,8 +246,8 @@ export default function Room() {
     participantCount === 1
       ? "max-w-3xl grid-cols-1"
       : participantCount === 2
-      ? "max-w-5xl grid-cols-1 sm:grid-cols-2"
-      : "max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+        ? "max-w-5xl grid-cols-1 sm:grid-cols-2"
+        : "max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
   const speakerEntries = [
     ...(localStream ? [{ id: "local", stream: localStream }] : []),
@@ -266,7 +269,7 @@ export default function Room() {
     navigate("/home");
   };
 
-  const copyRoomCode = async () => {
+  const copyroomId = async () => {
     try {
       await navigator.clipboard.writeText(roomId);
       setCopied(true);
@@ -323,7 +326,7 @@ export default function Room() {
         <div className="flex items-center gap-4">
           <LogoMark />
           <button
-            onClick={copyRoomCode}
+            onClick={copyroomId}
             className="meeting-room-code flex items-center gap-2 px-3 py-1.5 font-mono text-xs font-semibold normal-case tracking-[0.04em] transition hover:border-[#B8C0D0] hover:text-[#202124]"
           >
             {roomId}

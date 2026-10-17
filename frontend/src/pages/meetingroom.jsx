@@ -4,7 +4,7 @@ import { socket } from '../socket/socketClient';
 import { createPeerConnection } from '../webRTC/createRTC';
 import { getLocalStream } from '../webRTC/getlocalstream';
 
-function MeetingRoom({ roomCode, userId }) {
+function MeetingRoom({ roomId, userId }) {
   const localVideoRef = useRef(null);
   const [remoteStreams, setRemoteStreams] = useState({}); // { socketId: MediaStream }
   const peersRef = useRef({}); // { socketId: RTCPeerConnection }
@@ -12,13 +12,13 @@ function MeetingRoom({ roomCode, userId }) {
 
   useEffect(() => {
     async function init() {
-     
+
       const stream = await getLocalStream();
       localStreamRef.current = stream;
       localVideoRef.current.srcObject = stream;
 
-      
-      socket.emit('join-room', { roomCode, userId });
+
+      socket.emit('join-room', { roomId, userId });
 
       // 3. When someone ELSE joins after me, I initiate the call to them
       socket.on('user-joined', async ({ socketId }) => {
@@ -80,7 +80,7 @@ function MeetingRoom({ roomCode, userId }) {
       socket.off('ice-candidate-received');
       socket.off('user-left');
     };
-  }, [roomCode, userId]);
+  }, [roomId, userId]);
 
   // Helper: builds a peer connection AND wires ontrack to update React state
   function createPeer(remoteSocketId) {

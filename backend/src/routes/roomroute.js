@@ -5,5 +5,8 @@ const authMiddleware = require("../middleware/auth.js");
 
 roomRouter.post("/create", authMiddleware, roomController.createRoom);
 roomRouter.get("/recent",authMiddleware,roomController.getRecentMeetings);
+router.get("/:code", authMiddleware, getRoom);
+router.patch("/:code/access", authMiddleware, setAccess);
+router.delete("/:code", authMiddleware, deleteRoom);
 roomRouter.get("/:roomId",authMiddleware,roomController.joinRoomHandler);
 module.exports = roomRouter;

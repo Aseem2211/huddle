@@ -1,13 +1,11 @@
 
 import {useState} from "react";
-import {useNavigate,Link} from "react-router-dom";
+import {useNavigate,Link,useLoaction} from "react-router-dom";
 import {useAuth} from "../context/Authcontext";
 import {resendOtp} from "../services/authApi.js";
 
 
-// Keep your existing imports at the top (useState, Link, useNavigate, useAuth, resendOtp).
 
-/* ---------- Icons (sharp, 1.75 stroke, inherit currentColor) ---------- */
 const iconProps = {
     width: 18,
     height: 18,
@@ -107,7 +105,8 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
-
+    const location=useLocation();
+    navigate(location.state?.from || "/", { replace: true });
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");

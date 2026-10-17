@@ -22,7 +22,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
+app.set('io', io);
 const MAX_CHAT_MESSAGES = 200;
 const MAX_MESSAGE_LENGTH = 2000;
 const roomChats = new Map();
