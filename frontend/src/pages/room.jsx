@@ -23,6 +23,7 @@ import {
   Copy,
   Check,
   Users,
+  Share2,
 } from "lucide-react";
 
 const SOCKET_URL = (
@@ -385,9 +386,9 @@ export default function Room() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShareOpen((o) => !o)}
-            className="meeting-status px-3 py-1.5 text-xs font-bold tracking-[0.02em]"
+            className="meeting-status flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold tracking-[0.02em]"
           >
-            Share
+            <Share2 size={14} /> Share
           </button>
           {isHost && (
             <button

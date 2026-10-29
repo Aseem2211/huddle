@@ -12,3 +12,8 @@ export async function joinRoom(roomId){
   const res=await axiosClient.get(`/rooms/${roomId}`);
   return res.data;
 }
+
+export async function deleteRoom(roomId) {
+  const res = await axiosClient.delete(`/rooms/${roomId}`);
+  return res.data;
+}

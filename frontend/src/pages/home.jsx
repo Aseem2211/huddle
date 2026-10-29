@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authcontext";
-import { joinRoom, createRoom, getRecentMeetings } from "../services/roomapi";
+import { joinRoom, createRoom, getRecentMeetings, deleteRoom } from "../services/roomapi";
+import ShareRoom from "./share.jsx";
 import DMPanel from "../components/DMPanel";
 import { socket } from "../socket/socketClient";
 import AppShell from "../components/ui/AppShell";
@@ -17,6 +18,8 @@ import {
   Check,
   CalendarClock,
   Plus,
+  Share2,
+  Trash2,
 } from "lucide-react";
 
 function RecentSkeleton() {
@@ -45,6 +48,9 @@ export default function Home() {
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState("");
   const [copiedId, setCopiedId] = useState(null);
+  const [shareId, setShareId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [listError, setListError] = useState("");
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -103,6 +109,21 @@ export default function Home() {
       setTimeout(() => setCopiedId(null), 1500);
     } catch (err) {
       console.error("Copy failed", err);
+    }
+  };
+
+  const handleDelete = async (m) => {
+    if (!window.confirm(`Delete room ${m.room_id}? The code will stop working.`)) return;
+    setDeletingId(m.room_id);
+    setListError("");
+    try {
+      await deleteRoom(m.room_id);
+      setRecentMeetings((prev) => prev.filter((r) => r.room_id !== m.room_id));
+      setShareId((id) => (id === m.room_id ? null : id));
+    } catch (err) {
+      setListError(err.message || "Could not delete the room.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -203,8 +224,14 @@ export default function Home() {
 
           {recentState === "ready" && recentMeetings.length > 0 && (
             <ul className="divide-y divide-white/5">
+              {listError && (
+                <li className="p-4">
+                  <Notice type="error">{listError}</Notice>
+                </li>
+              )}
               {recentMeetings.map((m) => (
-                <li key={m.room_id} className="group flex items-center gap-4 px-5 py-4 transition hover:bg-white/[0.04]">
+                <li key={m.room_id} className="group px-5 py-4 transition hover:bg-white/[0.04]">
+                <div className="flex items-center gap-4">
                   <IconTile icon={Video} tone={m.status === "scheduled" ? "violet" : "cobalt"} />
                   <button
                     onClick={() => navigate(`/room/${m.room_id}`)}
@@ -231,11 +258,29 @@ export default function Home() {
                   >
                     {copiedId === m.room_id ? <Check size={15} className="text-[#67E8F9]" /> : <Copy size={15} />}
                   </button>
-                  <ArrowRight
-                    size={16}
-                    aria-hidden="true"
-                    className="hidden text-[#94A3B8] transition group-hover:translate-x-1 group-hover:text-[#67E8F9] sm:block"
-                  />
+                  <button
+                    onClick={() => setShareId((id) => (id === m.room_id ? null : m.room_id))}
+                    aria-label={`Share room ${m.room_id}`}
+                    title="Share link"
+                    className="border border-white/10 p-2 text-[#94A3B8] transition hover:border-white/25 hover:text-[#F1F5F9]"
+                  >
+                    <Share2 size={15} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(m)}
+                    disabled={deletingId === m.room_id}
+                    aria-label={`Delete room ${m.room_id}`}
+                    title="Delete room"
+                    className="border border-rose-400/30 p-2 text-rose-300 transition hover:border-rose-400 hover:bg-rose-500/10 disabled:opacity-40"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+                {shareId === m.room_id && (
+                  <div className="mt-3 border border-white/10 bg-[#101A2E] p-3">
+                    <ShareRoom roomId={m.room_id} />
+                  </div>
+                )}
                 </li>
               ))}
             </ul>

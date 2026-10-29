@@ -14,7 +14,7 @@ export default function Messages() {
   const navigate = useNavigate();
   const socket = typeof socketClient === "function" ? socketClient() : socketClient;
 
-  const { conversations, loading: convosLoading, bumpConversation } = useConversations();
+  const { conversations, loading: convosLoading, bumpConversation, refresh } = useConversations();
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [activeName, setActiveName] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,7 +54,8 @@ export default function Messages() {
     setActiveName(otherUser.name || "");
     setSearchQuery("");
     setSearchResults([]);
-  }, []);
+    refresh();
+  }, [refresh]);
 
   const handleSend = (e) => {
     e.preventDefault();
