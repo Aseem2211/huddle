@@ -1,5 +1,6 @@
 import {createContext,useContext,useEffect,useState,useCallback} from "react";
 import * as Authapi from "../services/authApi.js";
+import { reconnectSocket, socket } from "../socket/socketClient.js";
 const Authcontext=createContext();
 export function AuthProvider({children}){
     const [token,setToken]=useState(()=>localStorage.getItem("token"));
@@ -41,6 +42,7 @@ export function AuthProvider({children}){
     const login=useCallback(async({email,password})=>{
         const data=await Authapi.login({email,password});
         localStorage.setItem("token",data.token);
+        reconnectSocket();
         setToken(data.token);
         setUser(data.user);
         return data;
@@ -53,6 +55,7 @@ export function AuthProvider({children}){
     },[]);
     const logout=useCallback(()=>{
         localStorage.removeItem("token");
+        socket.disconnect();
         setToken(null);
         setUser(null);
     },[]);

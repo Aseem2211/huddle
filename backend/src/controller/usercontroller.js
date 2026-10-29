@@ -1,12 +1,11 @@
-const bcrypt=require("bcrypt");
-const {User}=reuire("../models/user.js");
-// controllers/userController.js (add this to your existing user controller)
+const bcrypt = require("bcryptjs");
+const User = require("../models/user.js");
 const pool = require("../config/db.js");
 
 exports.searchUsers = async (req, res) => {
   try {
     const { q } = req.query;
-    const currentUserId = req.user.id; // from your auth middleware
+    const currentUserId = req.user.id;
 
     if (!q || q.trim().length === 0) {
       return res.json([]);
@@ -29,21 +28,22 @@ exports.searchUsers = async (req, res) => {
     res.status(500).json({ message: "Search failed" });
   }
 };
-exports.updateProfileHandler=async(req,res)=>{
-    try{
-        const{name,email,password}=req.body;
-        if(!name||!email||!password){
-            return res.status(400).jason({message:"Name,email and password are required"});
-        }
-        const updateUser=await User.updateUser(req.user.id,{name,email,password});
-        if(!updateUser){
-            return res.status(404).json({message:"User not found"});
-        }
-        return res.status(200).json({message:"User updated successfully", user: updateUser});
-    } catch (error) {
-        console.error("Error updating user:", error);
-        return res.status(500).json({message:"Internal server error"});
+exports.updateProfileHandler = async (req, res) => {
+  try {
+    const name = String(req.body.name || "").trim();
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
     }
+    await pool.query("UPDATE users SET name=? WHERE id=?", [name, req.user.id]);
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ message: "User updated successfully", user });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 exports.changePasswordHandler=async(req,res)=>{
     try{
@@ -73,22 +73,16 @@ exports.changePasswordHandler=async(req,res)=>{
         return res.status(500).json({message:"Internal server error"});
     }
 };
-exports.uploadAvatar=async(req,res)=>{
-    try{
-        if(!req.file){
-            return res.status(400).json({error:"No file uploaded"});
-        }
-        const avatarURL=`/uploads/avatars/${req.file.filename}`;
-        await pool.query("UPDATE users SET avatar_url=? WHERE id=?",[
-            avatarUrl,
-            req.user.id,
-        ]);
-        res.status(200).json({
-            message:"Profile picture updated",
-            avatarUrl,
-        });
-    }catch(err){
-        console.error(err);
-        res.status(500).json({error:"Failed to upload avatar"});
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+    await pool.query("UPDATE users SET avatar_url=? WHERE id=?", [avatarUrl, req.user.id]);
+    res.status(200).json({ message: "Profile picture updated", avatarUrl });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to upload avatar" });
+  }
 };

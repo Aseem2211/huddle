@@ -31,14 +31,14 @@ export default function Profile() {
     setLoading(true);
     setMessage({ type: "", text: "" });
     try {
-      const res = await axiosClient.put("/api/users/profile", { name });
+      const res = await axiosClient.put("/users/profile", { name });
       setUser?.(res.data.user || { ...user, name });
       setMessage({ type: "success", text: "Profile updated!" });
       setEditing(false);
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Update failed",
+        text: err.message || "Update failed",
       });
     } finally {
       setLoading(false);

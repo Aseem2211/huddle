@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import axiosClient from "../services/axiosclient.js";
 import { Notice, SpinnerIcon, CameraIcon, ghostBtn } from "./ui/shared.jsx";
 
-const UPLOAD_PATH = "/api/auth/upload-avatar";
+const UPLOAD_PATH = "/users/upload-avatar";
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 5 * 1024 * 1024;
 

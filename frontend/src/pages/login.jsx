@@ -1,6 +1,6 @@
 
 import {useState} from "react";
-import {useNavigate,Link,useLoaction} from "react-router-dom";
+import {useNavigate,Link,useLocation} from "react-router-dom";
 import {useAuth} from "../context/Authcontext";
 import {resendOtp} from "../services/authApi.js";
 
@@ -106,7 +106,6 @@ export default function Login() {
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const location=useLocation();
-    navigate(location.state?.from || "/", { replace: true });
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
@@ -118,7 +117,7 @@ export default function Login() {
         try {
             const cleanEmail = email.trim().toLowerCase();
             await login({ email: cleanEmail, password });
-            navigate("/home");
+            navigate(location.state?.from || "/home", { replace: true });
         } catch (err) {
             if (err.data?.needsVerification) {
                 const cleanEmail = email.trim().toLowerCase();

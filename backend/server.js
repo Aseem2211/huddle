@@ -4,6 +4,8 @@ const { Server } = require('socket.io');
 const app = require('./src/app');
 const User = require('./src/models/user.js');
 const { verifyToken } = require('./src/utils/jwt.js');
+const { register: registerRoomAccess, canJoin } = require('./src/socket/roomAccess.js');
+const registerDmHandlers = require('./src/socket/dmSocket.js');
 
 const allowed = (process.env.CLIENT_URL || "")
   .split(",")
@@ -43,6 +45,9 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', (socket) => {
+  registerRoomAccess(io, socket);
+  registerDmHandlers(io, socket);
+
   const clearChatIfEmpty = (roomId) => {
     const members = io.sockets.adapter.rooms.get(roomId);
     if (!members || members.size === 0) roomChats.delete(roomId);
@@ -58,9 +63,12 @@ io.on('connection', (socket) => {
     }
   };
 
-  socket.on('join-room', ({ roomId: rawRoomId, userId } = {}) => {
+  socket.on('join-room', async ({ roomId: rawRoomId, userId } = {}) => {
     const roomId = normalizeRoomId(rawRoomId);
     if (!roomId) return;
+    if (!socket.user || !(await canJoin(roomId, socket.user.id))) {
+      return socket.emit('join-denied', { reason: 'not-allowed' });
+    }
     leaveCurrentRoom();
     socket.join(roomId);
     socket.roomId = roomId;

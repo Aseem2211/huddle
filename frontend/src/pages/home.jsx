@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Authcontext";
 import { joinRoom, createRoom, getRecentMeetings } from "../services/roomapi";
 import DMPanel from "../components/DMPanel";
+import { socket } from "../socket/socketClient";
 import AppShell from "../components/ui/AppShell";
 import { Card, IconTile, Pill, SectionLabel, Notice } from "../components/ui/shared";
 import {
@@ -44,7 +45,7 @@ export default function Home() {
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState("");
   const [copiedId, setCopiedId] = useState(null);
-  const { user, socket } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {

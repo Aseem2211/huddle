@@ -7,7 +7,7 @@ const normalize = (v) => String(v || "").trim().toLowerCase();
 
 async function loadHostRoom(req, res) {
   const code = normalize(req.params.code);
-  const [rows] = await pool.query("SELECT host_id FROM room WHERE room_id = ?", [code]);
+  const [rows] = await pool.query("SELECT host_id FROM rooms WHERE room_id = ?", [code]);
   if (!rows.length) {
     res.status(404).json({ message: "Room not found" });
     return null;
@@ -93,13 +93,14 @@ exports.getRoom = async (req, res) => {
   try {
     const code = normalize(req.params.code);
     const [rows] = await pool.query(
-      "SELECT room_id, host_id, access_mode FROM room WHERE room_id = ?",
+      "SELECT room_id, host_id, access_mode, title FROM rooms WHERE room_id = ?",
       [code]
     );
     if (!rows.length) return res.status(404).json({ message: "Room not found" });
     const r = rows[0];
     res.json({
       roomId: r.room_id,
+      title: r.title,
       accessMode: r.access_mode,
       isHost: String(r.host_id) === String(req.user.id),
     });
@@ -117,7 +118,7 @@ exports.setAccess = async (req, res) => {
     }
     const code = await loadHostRoom(req, res);
     if (!code) return;
-    await pool.query("UPDATE room SET access_mode = ? WHERE room_id = ?", [accessMode, code]);
+    await pool.query("UPDATE rooms SET access_mode = ? WHERE room_id = ?", [accessMode, code]);
     res.json({ accessMode });
   } catch (err) {
     console.error(err);
@@ -129,7 +130,7 @@ exports.deleteRoom = async (req, res) => {
   try {
     const code = await loadHostRoom(req, res);
     if (!code) return;
-    await pool.query("DELETE FROM room WHERE room_id = ?", [code]);
+    await pool.query("DELETE FROM rooms WHERE room_id = ?", [code]);
     const io = req.app.get("io");
     io.to(code).emit("room-deleted");
     io.in(code).socketsLeave(code);

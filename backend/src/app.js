@@ -27,9 +27,11 @@ app.use((req, res, next) => {
 const roomRouter = require("./routes/roomroute.js");
 const authrouter=require("./routes/authroute.js");
 const dmrouter=require("./routes/dmroute.js");
+const userrouter=require("./routes/userroute.js");
 app.get("/health",(req,res)=>res.json({ok:true}));
 app.use("/api/auth",authrouter);
 app.use("/api/rooms",roomRouter);
+app.use("/api/users",userrouter);
 app.use("/uploads",express.static(path.join(__dirname,"../uploads")));
 app.use("/api/conversations", require("./routes/conversationroute.js"));
 app.use("/api/dm",dmrouter);

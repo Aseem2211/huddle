@@ -42,7 +42,7 @@ export default function Settings() {
 
     setLoading(true);
     try {
-      await axiosClient.put("/api/users/change-password", {
+      await axiosClient.put("/users/change-password", {
         oldPassword,
         newPassword,
       });
@@ -53,7 +53,7 @@ export default function Settings() {
     } catch (err) {
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "Something went wrong",
+        text: err.message || "Something went wrong",
       });
     } finally {
       setLoading(false);
